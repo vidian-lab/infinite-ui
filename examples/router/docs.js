@@ -5,6 +5,7 @@ import Cascaders from '@/docs/Cascaders.md'
 import Dialog from '@/docs/Dialog.md'
 import Form from '@/docs/Form.md'
 import LineChart from '@/docs/LineChart.md'
+import Chart from '@/docs/Chart.md'
 import NavMenu from '@/docs/NavMenu.md'
 import Pagination from '@/docs/Pagination.md'
 import PieChart from '@/docs/PieChart.md'
@@ -26,5 +27,6 @@ export {
   SelectTags,
   Table,
   ThemePicker,
-  Tree
+  Tree,
+  Chart
 }

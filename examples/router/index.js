@@ -14,7 +14,8 @@ import {
   SelectTags,
   Table,
   ThemePicker,
-  Tree
+  Tree,
+  Chart
 } from './docs'
 // import Home from '@/views/home'
 import Layout from '@/views'
@@ -68,6 +69,10 @@ const routes = [
         path: 'lineChart',
         name: 'lineChart',
         component: LineChart
+      }, {
+        path: 'chart',
+        name: 'chart',
+        component: Chart
       }, {
         path: 'navMenu',
         name: 'navMenu',
