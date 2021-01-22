@@ -6,8 +6,44 @@
 </template>
 
 <script>
-import { Chart, Scale } from '@antv/g2'
+
 import propsConfig from './props'
+import { Chart, registerEngine, registerGeometry, registerComponentController, registerAction, registerInteraction } from '@antv/g2/lib/core'
+import Tooltip from '@antv/g2/lib/chart/controller/tooltip'
+import TooltipAction from '@antv/g2/lib/interaction/action/component/tooltip/geometry'
+
+import Line from '@antv/g2/lib/geometry/line'
+import Point from '@antv/g2/lib/geometry/point'
+import Interval from '@antv/g2/lib/geometry/interval'
+import Axis from '@antv/g2/lib/chart/controller/axis'
+import Legend from '@antv/g2/lib/chart/controller/legend'
+import Coordinate from '@antv/coord/lib/factory'
+// const G = require('@antv/g-canvas')
+import * as G from '@antv/g-canvas'
+// 按需注入
+registerEngine('canvas', G)
+registerGeometry('line', Line)
+registerGeometry('point', Point)
+registerGeometry('interval', Interval)
+
+registerComponentController('axis', Axis)
+registerComponentController('tooltip', Tooltip)
+registerComponentController('legend', Legend)
+registerComponentController('coordinate', Coordinate)
+
+registerAction('tooltip', TooltipAction)
+// 注册 tooltip 的 interaction
+registerInteraction('tooltip', {
+  start: [
+    { trigger: 'plot:mousemove', action: 'tooltip:show', throttle: { wait: 50, leading: true, trailing: false } },
+    { trigger: 'plot:touchmove', action: 'tooltip:show', throttle: { wait: 50, leading: true, trailing: false } }
+  ],
+  end: [
+    { trigger: 'plot:mouseleave', action: 'tooltip:hide' },
+    { trigger: 'plot:leave', action: 'tooltip:hide' },
+    { trigger: 'plot:touchend', action: 'tooltip:hide' }
+  ]
+})
 
 export default {
   name: 'Chart',
@@ -48,6 +84,9 @@ export default {
         height
       })
       chart.data(chartData)
+      console.log('====================================')
+      console.log(chart, Tooltip)
+      console.log('====================================')
       // 配置坐标轴
       const {
         Axis,
@@ -83,6 +122,7 @@ export default {
         // 获取 itemTplFunc
         const itemTpl = ToolTips[0].itemTplFunc()
         ToolTips[0].itemTpl = itemTpl
+        // Tooltip(ToolTips[0])
         chart.tooltip(ToolTips[0])
       }
       // 首先判断当前的Gemo 类型 , 柱状图
