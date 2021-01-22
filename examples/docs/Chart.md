@@ -39,6 +39,37 @@
       }
     }]"
   >
+    <InfiniteChartToolTips
+      visable=true
+      :crosshairs="{
+        type: 'x',
+        follow: true,
+        line: {
+          style: {
+            stroke: 'rgba(255,118,53,0.4)',
+            lineDash: [4]
+          }
+        }
+      }"
+      :showCrosshairs="true"
+      :padding="[40]"
+      :showTitle='false'
+      :itemTplFunc="()=>{
+        return '<div>{title}:{value}</div>'
+      }"
+      :domStyles="{
+        'g2-tooltip':{
+          backgroundColor: 'rgba(0,0,0, .5)',
+          color: '#fff',
+          height: '28px',
+          display:'flex',
+          alignItems: 'center'
+        },
+        'g2-tooltip-title': {
+          margin: '0'
+        }
+      }"
+    />
     <InfiniteChartLine :size='2' position="name*America" color="rgb(255,118,53)" />
     <InfiniteChartLine :size='2' position="name*China" color="rgb(255,290,53)" />
     <InfiniteChartLine :size='2' position="name*Japan" color="rgb(55,118,53)" />
