@@ -1,6 +1,6 @@
 const propsConfig = {
   // 自适应
-  autoFix: {
+  autoFit: {
     type: Boolean,
     default: true
   },

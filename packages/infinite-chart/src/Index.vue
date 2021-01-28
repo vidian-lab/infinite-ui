@@ -1,18 +1,18 @@
 <template>
   <div class="chart-container">
-    <Chart :id="id" v-bind="computedProps">
+    <ChartVue ref='chart-ref' :id="id" v-bind="computedProps">
       <slot></slot>
-    </Chart>
+    </ChartVue>
   </div>
 </template>
 
 <script>
-import Chart from './Chart'
+import ChartVue from './Chart'
 import propsConfig from './props'
 export default {
   name: 'InfiniteChart',
   components: {
-    Chart
+    ChartVue
   },
   props: propsConfig,
   computed: {

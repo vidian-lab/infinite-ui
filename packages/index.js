@@ -37,7 +37,7 @@ const components = [
   InfiniteChart,
   InfiniteChartAxis,
   InfiniteChartLine,
-  InfiniteChartToolTips,
+  InfiniteChartToolTips
 ]
 const install = Vue => {
   components.forEach(Component => {

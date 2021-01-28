@@ -1,12 +1,12 @@
 <template>
   <div class="chart">
-    <div :id="id"></div>
+    <div ref='chart-con' :id="id"></div>
     <slot></slot>
   </div>
 </template>
 
 <script>
-
+import { setScale, setToolTips } from './util'
 import propsConfig from './props'
 import { Chart, registerEngine, registerGeometry, registerComponentController, registerAction, registerInteraction } from '@antv/g2/lib/core'
 import Tooltip from '@antv/g2/lib/chart/controller/tooltip'
@@ -46,7 +46,7 @@ registerInteraction('tooltip', {
 })
 
 export default {
-  name: 'Chart',
+  name: 'ChartVue',
   props: Object.assign(
     {
       id: String
@@ -63,6 +63,7 @@ export default {
     }
   },
   mounted () {
+
     const tooltip = this.getSlots('ToolTips')
     const axis = this.getSlots('Axis')
     const line = this.getSlots('ChartLine')
@@ -72,7 +73,9 @@ export default {
       ToolTips: this.getSlotAttrs(tooltip),
       Line: this.getSlotAttrs(line)
     }
-    this.render()
+    this.$nextTick(()=>{
+      this.render()
+    })
   },
   methods: {
     render () {
@@ -84,9 +87,6 @@ export default {
         height
       })
       chart.data(chartData)
-      console.log('====================================')
-      console.log(chart, Tooltip)
-      console.log('====================================')
       // 配置坐标轴
       const {
         Axis,
@@ -105,26 +105,9 @@ export default {
           }
         })
       }
-      // 获取scale
-      (scale && scale.length) && (scale.map(item => {
-        const { name, config } = item
-        if (name) {
-          chart.scale(name, config)
-        } else if (config) {
-          chart.scale(config)
-        }
-      }))
-      // 配置提示框
-      if (!ToolTips.length) {
-        chart.tooltip(false)
-      } else {
-        // 读取slot 对应的配置信息
-        // 获取 itemTplFunc
-        const itemTpl = ToolTips[0].itemTplFunc()
-        ToolTips[0].itemTpl = itemTpl
-        // Tooltip(ToolTips[0])
-        chart.tooltip(ToolTips[0])
-      }
+      // 设置获取scale
+      setScale(chart, Line, chartData, scale)
+      setToolTips(chart, ToolTips)
       // 首先判断当前的Gemo 类型 , 柱状图
       if (type === 'interval' && intervalConfig?.type === 'multi') {
         // 如果是 组合柱状图，必须传入选择的固定类型
@@ -171,14 +154,13 @@ export default {
     getSlots (slotName, type = 'default') {
       const { $slots } = this
       // 获取所有的slots
-      const slots = $slots[type]
-      const result = slots && (slots.filter(item => {
+      const slots = $slots[type] || []
+      return slots.filter(item => {
         const { componentOptions } = item
         if (componentOptions) {
           return componentOptions.tag.includes(slotName)
         }
-      }) || [])
-      return result || []
+      })
     },
     /**
      * @param {Array} 传入的slot
@@ -187,7 +169,7 @@ export default {
      */
     getSlotAttrs (slot) {
       const result = []
-      slot.map(item => {
+      slot.forEach(item => {
         const { componentOptions = {}, data = {} } = item
         const { propsData = {} } = componentOptions
         const { attrs = {} } = data

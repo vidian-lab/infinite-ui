@@ -9,66 +9,9 @@
 <template>
   <infinite-chart
     :chartData="data"
-    :scale= "[{
-      name:'America',
-      config: {
-        min:0,
-        max:200000,
-        nice:true,
-      }
-    }, {
-      name:'China',
-      config: {
-        min:0,
-        nice:true,
-        max:200000
-      }
-    },{
-      name:'Japan',
-      config: {
-        min:0,
-        max:200000,
-        nice:true
-      }
-    },{
-      name:'Germany',
-      config: {
-        max:200000,
-        min:0,
-        nice:true
-      }
-    }]"
   >
     <InfiniteChartToolTips
       visable=true
-      :crosshairs="{
-        type: 'x',
-        follow: true,
-        line: {
-          style: {
-            stroke: 'rgba(255,118,53,0.4)',
-            lineDash: [4]
-          }
-        }
-      }"
-      :showCrosshairs="true"
-      :padding="[40]"
-      :showTitle='false'
-      :itemTplFunc="()=>{
-        return '<div>{title}:{value}</div>'
-      }"
-      :domStyles="{
-        'g2-tooltip':{
-          backgroundColor: 'rgba(0,0,0, .5)',
-          color: '#fff',
-          height: '28px',
-          display:'flex',
-          alignItems: 'center'
-        },
-        'g2-tooltip-title': {
-          margin: '0'
-        }
-      }"
     />
     <InfiniteChartLine :size='2' position="name*America" color="rgb(255,118,53)" />
     <InfiniteChartLine :size='2' position="name*China" color="rgb(255,290,53)" />
@@ -88,7 +31,7 @@
           {
             name: '1997',
             America: 86085,
-            China: 9616,
+            China: 26160,
             Japan: 44122,
             Germany: 22159
           },
@@ -123,12 +66,12 @@
 | 参数          | 说明                                      | 类型    | 可选值 | 默认值                                    |
 | ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
 | chart-data   | 渲染数据                                   | Array   | —      | —                                         |
-| autoFix      | 是否自适应屏幕                              | Boolean | —      |true                                     |
+| autoFit      | 是否自适应屏幕                              | Boolean | —      |true                                     |
 | width        | 图表宽度                              | String/ Number  | —      | 600 |
 | height       | 图表高度                                   | String/ Number  | —      | 400                             |
 | scale        | 接受度量衡缩放                              | Array | —      | true                                      |
 | type         | 图形图标类型                               | String | line/interval      | line |
-| intervalConfig| 柱状图，是否采取分组模式，还是串行模式,以及配置  | Object   | —      | -                      |
+| interval-config| 柱状图，是否采取分组模式，还是串行模式,以及配置  | Object   | —      | -                      |
 
 
 
@@ -185,16 +128,16 @@
           {
             name: '1997',
             America: 86085,
-            China: 9616,
+            China: 21616,
             Japan: 44122,
             Germany: 22159
           },
           { 
             name: '2007',
             America: 144776,
-            China: 35715,
             Japan: 45153,
-            Germany: 34447
+            Germany: 34447,
+            China: 35715,
           },
           { name: '2017',
             America: 193868,
@@ -277,3 +220,22 @@ Chart 内部图形基类
 | position   | 映射的字段                               | String  | —      | 必选 |
 | size | 宽度                                   | String/Number  | —      | 1                     |
 | color  | 颜色                             | String | —      | ——                                   |
+
+### Infinite-Chart-ToolTips
+Chart 内部提示框
+### Attributes
+
+| 参数         | 说明                                     | 类型    | 可选值 | 默认值                                    |
+| ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
+| visible         | 是否可见                             | Boolean   | true/false     | true                                         |
+| crosshairs   | 提示标线   | Boolean | String  | false      | —                                         |
+| show-point   | 遮罩层固定显示位置，接受 {x,y} 形式参数  | Boolean/String  | —     | true |
+| offset | 漂移量，相对于X轴的漂移量       | Number/String  | —     | 10                  |
+| cross-line  | 辅助线配置       | Object | —      | `{stroke: '#666',lineWidth: 2,lineDash: [2, 3]}`   |
+| padding  | 展示边距       | Array | —      | [10]    |
+| containerTpl  | 渲染提示层。外层| String | top/bottom/left/right | —    |
+| itemTpl  | 渲染提示层 |  String/Boolean | —      | —    |
+| domStyles  | 提示层dom样式      | Boolean/Object | —| —   |
+| showItemMarker  | 当前坐标轴次刻度线样式配置。      | Boolean/Object | —| —   |
+
+
