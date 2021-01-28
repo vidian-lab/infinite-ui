@@ -18,6 +18,7 @@ const getCommonScale = function (data, tick) {
 /**
  * @description 获取数组边界值
  * @param {Array} array 传入数组
+ * @returns Object
  */
 const getArraysBoundary = function (array) {
   if (!Array.isArray(array)) return '请传入数组'
@@ -31,6 +32,12 @@ const getArraysBoundary = function (array) {
   }
 }
 
+/**
+ * @description 获取格式化之后的边界值
+ * @param {Object} division
+ * @param {Number} tick
+ * @returns Array
+ */
 const getDivision = function (division, tick = 4) {
   // 首先判断 边界值是否是倍数值.
   const { min, max } = division
@@ -42,15 +49,21 @@ const getDivision = function (division, tick = 4) {
   return [0, newTick * tick]
 }
 
+/**
+ * @description 判断是不是整数
+ * @param {Number} value
+ * @returns Boolean
+ */
 const isInteger = function (value) {
   return (typeof value === 'number') && value % 1 === 0
 }
 
 /**
  *
- * @param {Obejct} chart chart 对象
- * @param {*} lineArray 原始数据
- * @param {*} config
+ * @param {Object} chart chart 对象
+ * @param {Array} lineArray 原始数据
+ * @param {Array/Object} config
+ * @returns chart chart 对象
  */
 const setScale = function (chart, lineArray, data, config) {
   // 首先获取 配置数据
@@ -92,7 +105,7 @@ const setScale = function (chart, lineArray, data, config) {
 /**
  * @param {*} chart chart
  * @param {Array} ToolTips 提示配置
- * @returns
+ * @returns chart chart 对象
  */
 const setToolTips = function (chart, ToolTips) {
   // 配置提示框
@@ -112,8 +125,77 @@ const setToolTips = function (chart, ToolTips) {
   return chart
 }
 
+/**
+ * @description 设置图形类
+ * @param {*} chart chart 对象
+ * @param {*} type 图形类型
+ * @param {*} intervalConfig 柱状图配置
+ * @param {*} GemoConfig 图形配置
+ * @returns chart chart 对象
+ */
+const setGemo = function (chart, type, intervalConfig, GemoConfig) {
+  // 首先判断当前的Gemo 类型 , 柱状图
+  if (type === 'interval' && intervalConfig?.type === 'multi') {
+    // 如果是 组合柱状图，必须传入选择的固定类型
+    // 优先获取Chart内部的配置
+    let config
+    if (intervalConfig && intervalConfig.type) {
+      config = intervalConfig
+    } else if (GemoConfig.length) {
+      config = GemoConfig[0]
+    }
+    const { position, multiName, adjust = [{
+      type: 'dodge'
+    }] } = config
+    chart.interval().position(position).color(multiName).adjust(adjust)
+  } else {
+    // 获取line 相关的配置，也可能没有配置，也可能有多个的配置，比如多线条，
+    (GemoConfig && GemoConfig.length) && GemoConfig.forEach(item => {
+      let {
+        position,
+        size = 1,
+        shape = 'smooth',
+        color
+      } = item
+      let gemo = chart[type]({
+        sortable: true
+      })
+      if (position) {
+        gemo.size(size).position(position).shape(shape)
+      }
+      if (color) {
+        gemo.color(color)
+      }
+    })
+  }
+  return chart
+}
+
+/**
+ * @description 设置坐标轴类
+ * @param {Object} chart chart 对象
+ * @param {Array} type 坐标轴类配置
+ * @returns chart chart 对象
+ */
+const setAxis = function (chart, axisConfig) {
+  // 坐标轴会是一个数组，可以针对多坐标轴
+  if (axisConfig && axisConfig.length) {
+    axisConfig.forEach(axisConfig => {
+      const { name } = axisConfig
+      // 如果没有配置name, 那么针对的就是所有的坐标轴
+      if (!name) {
+        chart.axis(axisConfig)
+      } else {
+        chart.axis(name, axisConfig)
+      }
+    })
+  }
+}
+
 export {
   getCommonScale,
   setScale,
-  setToolTips
+  setToolTips,
+  setGemo,
+  setAxis
 }

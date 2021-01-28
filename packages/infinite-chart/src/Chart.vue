@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { setScale, setToolTips } from './util'
+import { setScale, setToolTips, setGemo, setAxis } from './util'
 import propsConfig from './props'
 import { Chart, registerEngine, registerGeometry, registerComponentController, registerAction, registerInteraction } from '@antv/g2/lib/core'
 import Tooltip from '@antv/g2/lib/chart/controller/tooltip'
@@ -93,55 +93,13 @@ export default {
         ToolTips,
         Line
       } = componentConfig
-      // 坐标轴会是一个数组，可以针对多坐标轴
-      if (Axis && Axis.length) {
-        Axis.map(axisConfig => {
-          const { name } = axisConfig
-          // 如果没有配置name, 那么针对的就是所有的坐标轴
-          if (!name) {
-            chart.axis(axisConfig)
-          } else {
-            chart.axis(name, axisConfig)
-          }
-        })
-      }
+      setAxis(chart, Axis)
       // 设置获取scale
       setScale(chart, Line, chartData, scale)
+      // 设置提示框
       setToolTips(chart, ToolTips)
-      // 首先判断当前的Gemo 类型 , 柱状图
-      if (type === 'interval' && intervalConfig?.type === 'multi') {
-        // 如果是 组合柱状图，必须传入选择的固定类型
-        // 优先获取Chart内部的配置
-        let config
-        if (intervalConfig && intervalConfig.type) {
-          config = intervalConfig
-        } else if (Line.length) {
-          config = Line[0]
-        }
-        const { position, multiName, adjust = [{
-          type: 'dodge'
-        }] } = config
-        chart.interval().position(position).color(multiName).adjust(adjust)
-      } else {
-        // 获取line 相关的配置，也可能没有配置，也可能有多个的配置，比如多线条，
-        (Line && Line.length) && Line.map(item => {
-          let {
-            position,
-            size = 1,
-            shape = 'smooth',
-            color
-          } = item
-          let gemo = chart[type]({
-            sortable: true
-          })
-          if (position) {
-            gemo.size(size).position(position).shape(shape)
-          }
-          if (color) {
-            gemo.color(color)
-          }
-        })
-      }
+      // 设置图形
+      setGemo(chart, type, intervalConfig, Line)
       this.chart = chart
       chart.render()
     },
