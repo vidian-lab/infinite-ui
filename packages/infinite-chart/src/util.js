@@ -90,7 +90,6 @@ const setScale = function (chart, lineArray, data, config) {
 }
 
 /**
- *
  * @param {*} chart chart
  * @param {Array} ToolTips 提示配置
  * @returns

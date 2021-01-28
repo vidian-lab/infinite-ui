@@ -83,36 +83,10 @@
   <infinite-chart
     :chartData="data"
     type="interval"
-    :scale= "[{
-      name:'America',
-      config: {
-        min:0,
-        max:200000,
-        nice:true,
-      }
-    }, {
-      name:'China',
-      config: {
-        min:0,
-        nice:true,
-        max:200000
-      }
-    },{
-      name:'Japan',
-      config: {
-        min:0,
-        max:200000,
-        nice:true
-      }
-    },{
-      name:'Germany',
-      config: {
-        max:200000,
-        min:0,
-        nice:true
-      }
-    }]"
   >
+    <InfiniteChartToolTips
+      visable=true
+    />
     <InfiniteChartLine :size='10' position="name*America" color="rgb(5,198,53)" />
     <InfiniteChartLine :size='10' position="name*China" color="rgb(255,100,0)" />
     <InfiniteChartLine :size='10' position="name*Japan" color="rgb(0,255,255)" />
@@ -174,6 +148,9 @@
       multiName: 'type'
     }"
   >
+    <InfiniteChartToolTips
+      visable=true
+    />
   </infinite-chart>
   
 </template>
