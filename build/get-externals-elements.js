@@ -1,6 +1,6 @@
 var path = require('path')
 var fs = require('fs')
-var elConponentList = fs.readdirSync(path.resolve(__dirname, '../node_modules/element-ui/lib'))
+var elComponentList = fs.readdirSync(path.resolve(__dirname, '../node_modules/element-ui/lib'))
 
 // 获取文件名称（去掉扩展名）
 function getFileName (data) {
@@ -16,6 +16,7 @@ const config = {
   '@antv/g2/lib/chart/controller/axis': '@antv/g2/lib/chart/controller/axis',
   '@antv/g2/lib/chart/controller/tooltip': '@antv/g2/lib/chart/controller/tooltip',
   '@antv/g2/lib/chart/controller/legend': '@antv/g2/lib/chart/controller/legend',
+  '@antv/g2/lib/interaction/action/component/tooltip/geometry': '@antv/g2/lib/interaction/action/component/tooltip/geometry',
   '@antv/coord/lib/factory': '@antv/coord/lib/factory',
   '@antv/g-canvas': '@antv/g-canvas',
   // 公共依赖
@@ -25,7 +26,7 @@ const config = {
   'infinite-ui/packages/mixins/chart': 'finite-ui-wz/lib/mixins/chart'
 }
 
-elConponentList.forEach(file => {
+elComponentList.forEach(file => {
   if (file.includes('.js')) {
     config[`element-ui/lib/${getFileName(file)}`] = `element-ui/lib/${getFileName(file)}`
   }
@@ -43,5 +44,5 @@ const getExternalsEl = function (include) {
 module.exports = {
   config,
   getExternalsEl,
-  elConponentList
+  elComponentList
 }
