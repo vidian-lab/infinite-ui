@@ -11,14 +11,12 @@ import propsConfig from './props'
 import { Chart, registerEngine, registerGeometry, registerComponentController, registerAction, registerInteraction } from '@antv/g2/lib/core'
 import Tooltip from '@antv/g2/lib/chart/controller/tooltip'
 import TooltipAction from '@antv/g2/lib/interaction/action/component/tooltip/geometry'
-
 import Line from '@antv/g2/lib/geometry/line'
 import Point from '@antv/g2/lib/geometry/point'
 import Interval from '@antv/g2/lib/geometry/interval'
 import Axis from '@antv/g2/lib/chart/controller/axis'
 import Legend from '@antv/g2/lib/chart/controller/legend'
 import Coordinate from '@antv/coord/lib/factory'
-// const G = require('@antv/g-canvas')
 import * as G from '@antv/g-canvas'
 // 按需注入
 registerEngine('canvas', G)
@@ -63,7 +61,6 @@ export default {
     }
   },
   mounted () {
-
     const tooltip = this.getSlots('ToolTips')
     const axis = this.getSlots('Axis')
     const line = this.getSlots('ChartLine')
@@ -73,7 +70,7 @@ export default {
       ToolTips: this.getSlotAttrs(tooltip),
       Line: this.getSlotAttrs(line)
     }
-    this.$nextTick(()=>{
+    this.$nextTick(() => {
       this.render()
     })
   },
