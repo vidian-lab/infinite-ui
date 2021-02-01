@@ -194,7 +194,7 @@ Chart 内部图形基类
 | ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
 | smooth         | 是否平滑过渡                             | Boolean   | true/false     | true                                         |
 | shape   | 坐标轴名称                               | Object  | —      | —                                         |
-| position   | 映射的字段                               | String  | —      | 必选 |
+| position   | 映射的字段,类似x*y.此字段强约束                  | String  | —      | 必选 |
 | size | 宽度                                   | String/Number  | —      | 1                     |
 | color  | 颜色                             | String | —      | ——                                   |
 

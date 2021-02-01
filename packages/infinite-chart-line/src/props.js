@@ -8,7 +8,11 @@ const LINE_PROPS = {
   },
   position: {
     type: String,
-    required: true
+    required: true,
+    validator: function (value) {
+      // 必须包含 *
+      return value.indexOf('*') > 0
+    }
   },
   size: {
     type: Number | String
