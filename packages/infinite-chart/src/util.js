@@ -7,6 +7,8 @@
 const getCommonScale = function (data, tick) {
   // 通用配置5段，可以从外部传入控制
   // 获取大小值
+  if (!Array.isArray(data)) return '请传入数组参数'
+  if (!data.length) return '数组长度必须大于1'
   const division = getArraysBoundary(data)
   const result = getDivision(division, tick)
   return {
@@ -21,7 +23,6 @@ const getCommonScale = function (data, tick) {
  * @returns Object
  */
 const getArraysBoundary = function (array) {
-  if (!Array.isArray(array)) return '请传入数组'
   const value = array.sort((a, b) => {
     return a - b
   })
@@ -42,11 +43,15 @@ const getDivision = function (division, tick = 4) {
   // 首先判断 边界值是否是倍数值.
   const { min, max } = division
   const result = (max - min) / tick
-  const length = (Math.ceil(result) + '').length
   // 根据类型，扩展到最完整的值。
   // 根据 差值长度，判断是否需要多层次判断。根据差值的长度来判断
-  const newTick = Math.ceil(result / Math.pow(10, length - 1)) * Math.pow(10, length - 1)
-  return [0, newTick * tick]
+  // 获取步进差值, 最大值为3位数，10，2位数则为1
+  let step = Math.pow(10, (max + '').length - 2)
+
+  let realStep = Math.ceil(result / step) * step
+  let endStep = Math.ceil(max / step) * step
+  let startStep = endStep - tick * realStep
+  return [startStep, endStep]
 }
 
 /**
@@ -59,9 +64,9 @@ const isInteger = function (value) {
 }
 
 /**
- *
  * @param {Object} chart chart 对象
- * @param {Array} lineArray 原始数据
+ * @param {Array} lineArray Gemo的配置
+ * @param {Array} data 原始数据
  * @param {Array/Object} config
  * @returns chart chart 对象
  */
@@ -69,6 +74,7 @@ const setScale = function (chart, lineArray, data, config) {
   // 首先获取 配置数据
   const result = []
   lineArray.forEach(item => {
+    // position 必选
     const { position } = item
     const name = position.split('*')[0]
     const key = position.split('*')[1]
@@ -107,7 +113,7 @@ const setScale = function (chart, lineArray, data, config) {
  * @param {Array} ToolTips 提示配置
  * @returns chart chart 对象
  */
-const setToolTips = function (chart, ToolTips) {
+const setToolTips = function (chart, ToolTips = []) {
   // 配置提示框
   if (!ToolTips.length) {
     chart.tooltip(false)
@@ -127,15 +133,15 @@ const setToolTips = function (chart, ToolTips) {
 
 /**
  * @description 设置图形类
- * @param {*} chart chart 对象
- * @param {*} type 图形类型
- * @param {*} intervalConfig 柱状图配置
- * @param {*} GemoConfig 图形配置
+ * @param {Object} chart chart 对象
+ * @param {String} type 图形类型
+ * @param {Object} intervalConfig 柱状图配置
+ * @param {Array} GemoConfig 图形配置
  * @returns chart chart 对象
  */
-const setGemo = function (chart, type, intervalConfig, GemoConfig) {
+const setGemo = function (chart, type, intervalConfig, GemoConfig = []) {
   // 首先判断当前的Gemo 类型 , 柱状图
-  if (type === 'interval' && intervalConfig?.type === 'multi') {
+  if (type === 'interval') {
     // 如果是 组合柱状图，必须传入选择的固定类型
     // 优先获取Chart内部的配置
     let config
@@ -143,14 +149,18 @@ const setGemo = function (chart, type, intervalConfig, GemoConfig) {
       config = intervalConfig
     } else if (GemoConfig.length) {
       config = GemoConfig[0]
+    } else {
+      // 都没有，那就挂了
+      return '请最少传入一个配置'
     }
     const { position, multiName, adjust = [{
       type: 'dodge'
     }] } = config
+    if (!position) return '请传入合法的position值'
     chart.interval().position(position).color(multiName).adjust(adjust)
   } else {
     // 获取line 相关的配置，也可能没有配置，也可能有多个的配置，比如多线条，
-    (GemoConfig && GemoConfig.length) && GemoConfig.forEach(item => {
+    GemoConfig.length && GemoConfig.forEach(item => {
       let {
         position,
         size = 1,
@@ -179,7 +189,7 @@ const setGemo = function (chart, type, intervalConfig, GemoConfig) {
  */
 const setAxis = function (chart, axisConfig) {
   // 坐标轴会是一个数组，可以针对多坐标轴
-  if (axisConfig && axisConfig.length) {
+  if (Array.isArray(axisConfig) && axisConfig && axisConfig.length) {
     axisConfig.forEach(axisConfig => {
       const { name } = axisConfig
       // 如果没有配置name, 那么针对的就是所有的坐标轴
@@ -189,6 +199,7 @@ const setAxis = function (chart, axisConfig) {
         chart.axis(name, axisConfig)
       }
     })
+    return chart
   }
 }
 
@@ -197,5 +208,6 @@ export {
   setScale,
   setToolTips,
   setGemo,
-  setAxis
+  setAxis,
+  isInteger
 }
