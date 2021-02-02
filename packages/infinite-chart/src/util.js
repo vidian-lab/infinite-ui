@@ -68,7 +68,7 @@ const isInteger = function (value) {
  * @param {Array} lineArray Gemo的配置
  * @param {Array} data 原始数据
  * @param {Array/Object} config
- * @returns chart chart 对象
+ * @returns {chart} chart 对象
  */
 const setScale = function (chart, lineArray, data, config) {
   // 首先获取 配置数据
@@ -101,9 +101,14 @@ const setScale = function (chart, lineArray, data, config) {
   })
 
   function getConfig (config = [], name) {
-    return config.find((item) => {
-      return item.name === name
-    })?.config || {}
+    // 增加类型判断
+    if (Array.isArray(config)) {
+      return config.find((item) => {
+        return item.name === name
+      })?.config || {}
+    } else {
+      return config || {}
+    }
   }
   return chart
 }
@@ -209,5 +214,7 @@ export {
   setToolTips,
   setGemo,
   setAxis,
-  isInteger
+  isInteger,
+  getArraysBoundary,
+  getDivision
 }
