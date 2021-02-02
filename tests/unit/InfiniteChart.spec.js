@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import InfiniteChart from '@/packages/infinite-chart/src/Index.vue'
-import { getCommonScale, setAxis, setGemo, setScale, setToolTips,isInteger } from '../../packages/infinite-chart/src/util'
+import { getCommonScale, setAxis, setGemo, setScale, setToolTips, isInteger, getArraysBoundary, getDivision } from '@/packages/infinite-chart/src/util'
 
 const option = {
   chartData: [
@@ -49,7 +49,7 @@ describe('Chart.vue init ', () => {
       intervalConfig: null
     })
     const ChartComponent = wrapper.findComponent({ name: 'ChartVue' })
-    const { type, intervalConfig, render } = ChartComponent.vm
+    const { type, intervalConfig } = ChartComponent.vm
     expect(type === 'interval' && intervalConfig).toBe(null)
   })
 })
@@ -100,7 +100,8 @@ describe('test utils', () => {
         axis: function () {}
       },
       axisConfig: [{
-
+        name: 'day'
+      }, {
       }]
     }
     // 原始
@@ -123,12 +124,43 @@ describe('test utils', () => {
       chart: {
         scale: function () {}
       },
-      testData: [], // 原始数据
-      lineConfig: [], //
-      axisConfig: {}
+      testData: [{
+        day: 1,
+        value: 2
+      }], // 原始数据
+      lineConfig: [{
+        position: 'day*value',
+        config: {
+
+        }
+      }], //
+      scaleConfig: [{
+        name: 'China'
+      }]
     }
     // 原始
-    expect(setScale(params.chart, params.lineConfig, params.testData, params.axisConfig)).toBe(params.chart)
+    expect(setScale(params.chart, params.lineConfig, params.testData, params.scaleConfig)).toBe(params.chart)
+  })
+
+  it('测试 setScale 方法,CONFIG默认对象 ', () => {
+    const params = {
+      chart: {
+        scale: function () {}
+      },
+      testData: [{
+        day: 1,
+        value: 2
+      }], // 原始数据
+      lineConfig: [{
+        position: 'day*value',
+        config: {
+
+        }
+      }], //
+      scaleConfig: {}
+    }
+    // 原始
+    expect(setScale(params.chart, params.lineConfig, params.testData, params.scaleConfig)).toBe(params.chart)
   })
 
   it('测试 setToolTips 方法', () => {
@@ -173,10 +205,19 @@ describe('test utils', () => {
   })
 
   it('测试 setGemo 方法, 是否通过', () => {
+    function createFunc () {
+      return function () {
+        return this
+      }
+    }
     const params = {
       chart: {
-        tooltip: function () {},
-        line: function () {}
+        tooltip: createFunc(),
+        line: createFunc(),
+        size: createFunc(),
+        position: createFunc(),
+        shape: createFunc(),
+        color: createFunc()
       },
       type: 'line',
       testData: [{
@@ -192,7 +233,93 @@ describe('test utils', () => {
       }]
     }
     // 原始
-    expect(setGemo(params.chart, params.lineConfig, params.testData, params.axisConfig)).toBe(params.chart)
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
+  })
+
+  it('测试 setGemo 方法, 是否通过', () => {
+    function createFunc () {
+      return function () {
+        return this
+      }
+    }
+    const params = {
+      chart: {
+        tooltip: createFunc(),
+        line: createFunc(),
+        size: createFunc(),
+        position: createFunc(),
+        shape: createFunc(),
+        color: createFunc()
+      },
+      type: 'line',
+      testData: [{
+        day: 1,
+        value: 2
+      }], // 原始数据
+      intervalConfig: [{
+        position: 'day*value',
+        size: 1,
+        shape: 'smooth',
+        color: '#fff'
+      }]
+    }
+    // 原始
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
+  })
+
+  it('测试 setGemo 方法, 是否通过', () => {
+    function createFunc () {
+      return function () {
+        return this
+      }
+    }
+    const params = {
+      chart: {
+        tooltip: createFunc(),
+        line: createFunc(),
+        size: createFunc(),
+        position: createFunc(),
+        shape: createFunc(),
+        color: createFunc(),
+        adjust: createFunc()
+      },
+      type: 'interval',
+      testData: [{
+        day: 1,
+        value: 2
+      }], // 原始数据
+      intervalConfig: {
+        size: 1,
+        shape: 'smooth',
+        color: '#fff'
+      }
+    }
+    // 原始
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe('请最少传入一个配置')
+  })
+
+  it('测试 setGemo 方法, 使用GemoConfig配置', () => {
+    function createFunc() {
+      return function () {
+        return this
+      }
+    }
+    const params = {
+      chart: {
+        tooltip: createFunc(),
+        line: createFunc(),
+        interval: createFunc(),
+        position: createFunc(),
+        color: createFunc(),
+        adjust: createFunc()
+      },
+      type: 'interval',
+      GemoConfig: [{
+        position: 'day*value'
+      }]
+    }
+    // 原始
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
   })
 
   it('测试 setGemo 方法, 配置异常参数，是否捕获', () => {
@@ -202,12 +329,12 @@ describe('test utils', () => {
         line: function () {}
       },
       type: 'interval',
-      intervalConfig: {
+      GemoConfig: [{
         // type: 'multi'
-      }
+      }]
     }
     // 原始
-    expect(setGemo(params.chart, params.type, params.intervalConfig)).toBe('请最少传入一个配置')
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params)).toBe('请最少传入一个配置')
   })
 
   it('测试 setGemo 方法, 配置异常参数，是否捕获', () => {
@@ -225,4 +352,15 @@ describe('test utils', () => {
     expect(setGemo(params.chart, params.type, params.intervalConfig)).toBe('请传入合法的position值')
   })
 
+  it('测试 getArraysBoundary  方法', () => {
+    const data = [1, 2, 3]
+    // 原始
+    expect(getArraysBoundary(data)).toStrictEqual({ min: 1, max: 3 })
+  })
+
+  it('测试  getDivision 方法', () => {
+    const data = { min: 90, max: 500 }
+    // 原始
+    expect(getDivision(data)).toStrictEqual([60, 500])
+  })
 })
