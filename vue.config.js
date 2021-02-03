@@ -4,8 +4,6 @@ const resolve = (dir) => {
 }
 const portfinder = require('portfinder')
 const html = require('html-webpack-plugin')
-
-const { getExternalsEl } = require('./build/get-externals-elements')
 const isProduction = process.env.NODE_ENV === 'production'
 const vendorPackage = isProduction ? {
   vue: 'Vue',
@@ -13,7 +11,6 @@ const vendorPackage = isProduction ? {
   'highlight.js': 'hljs',
   '@antv/g2': 'G2'
 } : {}
-const propElExternals = process.env.NODE_ENV === 'lib' ? getExternalsEl() : {}
 module.exports = {
   publicPath: './',
   lintOnSave: false,
@@ -40,7 +37,6 @@ module.exports = {
     config.resolve.alias['infinite-ui'] = resolve('./')
 
     config.externals = {
-      ...propElExternals,
       ...vendorPackage
     }
 

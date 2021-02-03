@@ -40,6 +40,7 @@ new Vue({
       "component",
       {
         "libraryName": "infinite-ui",
+        // 这里提供了两套主题色 `theme-chalk` || `theme-chalk-blue`
         "styleLibraryName": "theme-chalk"
       },
       "infinite-ui"

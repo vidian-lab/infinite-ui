@@ -17,9 +17,9 @@
     "build:style": "gulp build --gulpfile packages/theme-chalk/gulpfile.js",
     "clean": "rimraf lib && rimraf packages/*/lib",
     "init": "npm install commitizen -g && commitizen init cz-conventional-changelog --save-dev --save-exact && npm run bootstrap",
-    "lib": "vue-cli-service build --target lib --name infinite-ui --mode lib --dest lib packages/index.js && webpack --config ./build/webpack.component.js"
+    "lib": "webpack --config build/webpack.common.js && webpack --config build/webpack.component.js"
   },
-  "main": "lib/infinite-ui.umd.js",
+  "main": "lib/infinite-ui.common.js",
   "files": [
     "lib",
     "packages",
@@ -27,7 +27,6 @@
   ],
   "dependencies": {
     "@antv/g2": "^4.0.1",
-    "core-js": "^3.3.4",
     "element-ui": "^2.10.1"
   },
   "devDependencies": {
@@ -45,6 +44,7 @@
     "babel-plugin-component": "^1.1.1",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
+    "core-js": "^3.8.3",
     "cp-cli": "^2.0.0",
     "cross-env": "^7.0.2",
     "cz-conventional-changelog": "^3.2.0",

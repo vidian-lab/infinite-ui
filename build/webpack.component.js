@@ -5,8 +5,8 @@ const resolve = (dir) => {
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const Components = require('./get-components')()
-const portfinder = require('portfinder')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const portfinder = require('portfinder')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const { getExternalsEl } = require('./get-externals-elements')
 const entry = {}
 Components.forEach(c => {
@@ -64,7 +64,7 @@ const webpackConfig = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules|utils\/popper\.js|utils\/date\.js/
       }, {
         test: /\.vue$/,
         loader: 'vue-loader'
