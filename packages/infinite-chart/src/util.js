@@ -7,7 +7,7 @@
 const getCommonScale = function (data, tick) {
   // 通用配置5段，可以从外部传入控制
   // 获取大小值
-  if (!Array.isArray(data)) return '请传入数组参数'
+  if (!isArray(data)) return '请传入数组参数'
   if (!data.length) return '数组长度必须大于1'
   const division = getArraysBoundary(data)
   const result = getDivision(division, tick)
@@ -145,19 +145,11 @@ const setToolTips = function (chart, ToolTips = []) {
  * @returns chart chart 对象
  */
 const setGemo = function (chart, type, intervalConfig, GemoConfig = []) {
-  // 首先判断当前的Gemo 类型 , 柱状图
-  if (type === 'interval') {
+  // 首先判断当前的Gemo 类型 , 柱状图, 如果是柱状图，也可以走下面的
+  if (type === 'interval' && intervalConfig && intervalConfig.type) {
     // 如果是 组合柱状图，必须传入选择的固定类型
     // 优先获取Chart内部的配置
-    let config
-    if (intervalConfig && intervalConfig.type) {
-      config = intervalConfig
-    } else if (GemoConfig.length) {
-      config = GemoConfig[0]
-    } else {
-      // 都没有，那就挂了
-      return '请最少传入一个配置'
-    }
+    let config = intervalConfig
     const { position, multiName, adjust = [{
       type: 'dodge'
     }] } = config
@@ -208,6 +200,216 @@ const setAxis = function (chart, axisConfig) {
   }
 }
 
+/**
+ * @description 获取Chart对应的配置项的颜色属性
+ * @param {*} chart
+ */
+const getChartColor = function (chart) {
+  const result = []
+  let tag = false
+  if (chart.id === 'view3') {
+    tag = true
+    console.log('themeObject', chart)
+    console.log('themeObject', chart.themeObject)
+  }
+  chart.geometries.forEach(geom => {
+    const { theme, attributeOption } = geom
+    if (tag) {
+      console.log('====================================')
+      console.log(geom.dataArray)
+      console.log(chart)
+      console.log('====================================')
+    }
+    if (!theme) {
+      const { color, position } = attributeOption
+      result.push({
+        position,
+        color
+      })
+    }
+  })
+  return result
+}
+
+const getGeomColor = function (colors, name) {
+  if (!isArray(colors)) return '入参不符合规范'
+  const result = colors.find((color) => {
+    if (color.position && isArray(color.position.fields)) {
+      return color.position.fields.includes(name)
+    }
+  })
+  if (result && result.color && result.color.fields) {
+    return result.color.fields
+  } else {
+    // 如果获取不到对应的color。那么直接抛出chart 内部的colors
+    return []
+  }
+}
+
+/**
+ * @description 返回chart被使用的name
+ * @param {Object} chart 对象
+ * @param {Array} legends 图例组件
+ * @returns {Array} 绑定使用的names
+ */
+const getNames = function (legends) {
+  const result = []
+  legends.forEach(legend => {
+    const { names } = legend
+    // 属性判断
+    if (isArray(names)) {
+      result.concat(names)
+    } else if (isString(names)) {
+      // 如果是按照字符串连接的，那么需要切割
+      result.push(names.split(','))
+    }
+  })
+  return [...new Set(result)][0] || []
+}
+
+const getIntervalColor = function (chart, name, intervalConfig, data) {
+  const { themeObject } = chart
+  const { colors10 } = themeObject
+  // 获取names 对应的排序。
+  // 首先获取names 正确的排序
+  const { multiName } = intervalConfig
+  const names = []
+  data.forEach(item => {
+    let ele = item[multiName]
+    if (ele && !names.includes(item[multiName])) {
+      names.push(ele)
+    }
+  })
+  const index = names.indexOf(name)
+  return colors10[index]
+}
+
+/**
+ * @description 设置图例的相关方法
+ * @param {*} chart chart 对象
+ * @param {Array} legends 内部从组件内继承的配置
+ * @param {Array} config legend 的配置对象
+ * @param {Object} intervalConfig intervalConfig 配置对象
+ * @param {String} type type chart 类型
+ * @param {Array} data 原始数据
+ */
+const setLegend = function (chart, legends, config, intervalConfig, type, data) {
+  // 优先取Chart 内部的配置
+  const names = getNames(legends)
+  const colors = getChartColor(chart)
+  function getConfig (legends, name) {
+    // 获取所有包含当前name的图例配置
+    const result = legends.filter(item => {
+      return item.names.includes(name)
+    })
+    // 柱状图特殊处理
+    let fillColor = getGeomColor(colors, name)[0]
+    if (type === 'interval' && isObject(intervalConfig)) {
+      fillColor = getIntervalColor(chart, name, intervalConfig, data)
+    }
+    let defaultMarker = {
+      symbol: 'square',
+      style: {
+        fill: fillColor
+      }
+    }
+    if (result.length) {
+      result.forEach(i => {
+        const { marker = {} } = i
+        defaultMarker = mergeDeep(defaultMarker, marker)
+      })
+      // 获取默认的legend的配置数据，默认最下面。默认值+方块+默认颜色
+      // 配置各个属性
+      return {
+        name,
+        value: name,
+        marker: defaultMarker
+      }
+    } else {
+      return {
+        name,
+        value: name,
+        marker: defaultMarker
+      }
+    }
+  }
+
+  function setConfig (names, legends) {
+    const items = []
+    names.forEach(item => {
+      if (isObject(item)) {
+        const { name, value, fill = '#ccc' } = item
+        const defaultConfig = getConfig(legends, name)
+        let config = {
+          name, // 展示的名称
+          value, // 对应的指标值
+          marker: {
+            symbol: 'square',
+            style: {
+              fill
+            }
+          }
+        }
+        if (defaultConfig) {
+          config = defaultConfig
+        }
+        items.push(config)
+      } else {
+        const defaultConfig = getConfig(legends, item)
+        items.push(defaultConfig)
+      }
+    })
+    return {
+      custom: true,
+      items: items
+    }
+  }
+
+  // 优先走默认的Chart组件上的配置，然后再走legend的配置。如果都没有则走系统默认的配置
+  if (config && isObject(config)) {
+    chart.legend(setConfig(config))
+  } else if (isArray(legends)) {
+    const defaultConfig = setConfig(names, legends)
+    chart.legend(defaultConfig)
+  } else {
+    chart.legend(false)
+  }
+  return chart
+}
+
+function isObject (value) {
+  return Object.prototype.toString.call(value) === '[object Object]'
+}
+
+function isArray (value) {
+  return Object.prototype.toString.call(value) === '[object Array]'
+}
+
+function isString (value) {
+  return Object.prototype.toString.call(value) === '[object String]'
+}
+
+function mergeDeep (...objects) {
+  const isObject = obj => obj && typeof obj === 'object'
+
+  return objects.reduce((prev, obj) => {
+    Object.keys(obj).forEach(key => {
+      const pVal = prev[key]
+      const oVal = obj[key]
+
+      if (Array.isArray(pVal) && Array.isArray(oVal)) {
+        prev[key] = pVal.concat(...oVal)
+      } else if (isObject(pVal) && isObject(oVal)) {
+        prev[key] = mergeDeep(pVal, oVal)
+      } else {
+        prev[key] = oVal
+      }
+    })
+
+    return prev
+  }, {})
+}
+
 export {
   getCommonScale,
   setScale,
@@ -216,5 +418,6 @@ export {
   setAxis,
   isInteger,
   getArraysBoundary,
-  getDivision
+  getDivision,
+  setLegend
 }
