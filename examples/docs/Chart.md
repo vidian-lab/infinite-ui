@@ -17,6 +17,10 @@
     <InfiniteChartLine :size='2' position="name*China" color="rgb(255,290,53)" />
     <InfiniteChartLine :size='2' position="name*Japan" color="rgb(55,118,53)" />
     <InfiniteChartLine :size='2' position="name*Germany" color="rgb(255,118,153)" />
+    <InfiniteChartLegend names='America,China,Japan,Germany' :position="config.position" />
+    <InfiniteChartLegend names='America' :position="config.position" :marker='{
+      symbol: "circle"
+    }' />
     <InfiniteChartAxis name='America'/>
     <InfiniteChartAxis name='China' :visible='false' />
     <InfiniteChartAxis name='Japan' :visible='false' />
@@ -27,6 +31,10 @@
   export default {
     data() {
       return {
+        config:{
+          position: 'top',
+          value: ''
+        },
         data: [
           {
             name: '1997',
@@ -87,8 +95,9 @@
     <InfiniteChartToolTips
       visable=true
     />
-    <InfiniteChartLine :size='10' position="name*America" color="rgb(5,198,53)" />
+    <InfiniteChartLegend names='America,China,Japan,Germany' />
     <InfiniteChartLine :size='10' position="name*China" color="rgb(255,100,0)" />
+    <InfiniteChartLine :size='10' position="name*America" color="rgb(5,198,53)" />
     <InfiniteChartLine :size='10' position="name*Japan" color="rgb(0,255,255)" />
     <InfiniteChartLine :size='10' position="name*Germany" color="rgb(155,128,153)" />
   </infinite-chart>
@@ -101,8 +110,8 @@
         data: [
           {
             name: '1997',
-            America: 86085,
             China: 21616,
+            America: 86085,
             Japan: 44122,
             Germany: 22159
           },
@@ -148,23 +157,23 @@
       multiName: 'type'
     }"
   >
+    <InfiniteChartLegend names='America,China,Japan,Germany' />
     <InfiniteChartToolTips
       visable=true
     />
   </infinite-chart>
-  
 </template>
 <script>
   export default {
     data() {
       return {
         data:[
-          { name: '1997', value: 86085, type: 'America' },
-          { name: '2007', value: 144776, type: 'America' },
-          { name: '2017', value: 193868, type: 'America' },
           { name: '1997', value: 9616, type: 'China' },
           { name: '2007', value: 35715, type: 'China' },
+          { name: '1997', value: 86085, type: 'America' },
           { name: '2017', value: 122503, type: 'China' },
+          { name: '2007', value: 144776, type: 'America' },
+          { name: '2017', value: 193868, type: 'America' },
           { name: '1997', value: 44122, type: 'Japan' },
           { name: '2007', value: 45153, type: 'Japan' },
           { name: '2017', value: 48675, type: 'Japan' },
