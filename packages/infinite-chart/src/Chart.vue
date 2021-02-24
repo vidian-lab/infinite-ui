@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { setScale, setToolTips, setGemo, setAxis } from './util'
+import { setScale, setToolTips, setGemo, setAxis, setLegend } from './util'
 import propsConfig from './props'
 import { Chart, registerEngine, registerGeometry, registerComponentController, registerAction, registerInteraction } from '@antv/g2/lib/core'
 import Tooltip from '@antv/g2/lib/chart/controller/tooltip'
@@ -64,11 +64,13 @@ export default {
     const tooltip = this.getSlots('ToolTips')
     const axis = this.getSlots('Axis')
     const line = this.getSlots('ChartLine')
+    const legend = this.getSlots('ChartLegend')
     // 设置当前的对象配置信息
     this.componentConfig = {
       Axis: this.getSlotAttrs(axis),
       ToolTips: this.getSlotAttrs(tooltip),
-      Line: this.getSlotAttrs(line)
+      Line: this.getSlotAttrs(line),
+      legend: this.getSlotAttrs(legend)
     }
     this.$nextTick(() => {
       this.render()
@@ -76,7 +78,7 @@ export default {
   },
   methods: {
     render () {
-      const { autoFit, type = 'line', id, width, height, chartData, componentConfig, scale, intervalConfig } = this
+      const { autoFit, type = 'line', id, width, height, chartData, componentConfig, scale, intervalConfig, legendConfig } = this
       const chart = new Chart({
         container: id,
         autoFit,
@@ -88,7 +90,8 @@ export default {
       const {
         Axis,
         ToolTips,
-        Line
+        Line,
+        legend
       } = componentConfig
       setAxis(chart, Axis)
       // 设置获取scale
@@ -97,6 +100,7 @@ export default {
       setToolTips(chart, ToolTips)
       // 设置图形
       setGemo(chart, type, intervalConfig, Line)
+      setLegend(chart, legend, legendConfig, intervalConfig, type, chartData)
       this.chart = chart
       chart.render()
     },
