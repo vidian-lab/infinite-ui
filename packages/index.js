@@ -18,6 +18,7 @@ import InfiniteChart from './infinite-chart'
 import InfiniteChartAxis from './infinite-chart-axis'
 import InfiniteChartLine from './infinite-chart-line'
 import InfiniteChartToolTips from './infinite-chart-tooltips'
+import InfiniteChartLegend from './infinite-chart-legend'
 const version = '0.0.10'
 const components = [
   InfiniteButton,
@@ -37,7 +38,8 @@ const components = [
   InfiniteChart,
   InfiniteChartAxis,
   InfiniteChartLine,
-  InfiniteChartToolTips
+  InfiniteChartToolTips,
+  InfiniteChartLegend
 ]
 const install = Vue => {
   components.forEach(Component => {
@@ -69,6 +71,7 @@ export {
   InfiniteChartAxis,
   InfiniteChartLine,
   InfiniteChartToolTips,
+  InfiniteChartLegend
 }
 export default {
   install,
@@ -91,4 +94,5 @@ export default {
   InfiniteChartAxis,
   InfiniteChartLine,
   InfiniteChartToolTips,
+  InfiniteChartLegend
 }
