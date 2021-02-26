@@ -4,11 +4,23 @@ const TOOL_TIPS_PROPS = {
     type: Boolean,
     default: false
   },
-  // 提示标线
-  // 接受 true/false, 'x', 'cross'
-  crosshairs: {
-    type: Boolean | String,
+  // 是否显示 tooltips 辅助线， 默认不展示
+  showCrosshairs: {
+    type: Boolean,
     default: false
+  },
+  // 提示标线的配置
+  crosshairs: {
+    type: Object,
+    default: () => {
+      return {
+        type: 'x', // 接受 ‘x’, 'y', 'xy',
+        follow: false, // 标线是否跟随鼠标活动
+        textBackground: null, // 辅助线文本背景配置
+        line: null, // 辅助线样式配置
+        text: null // 文字样式配置
+      }
+    }
   },
   // 固定展示图层位置
   // 接受 {x,y} 形式参数
@@ -20,17 +32,6 @@ const TOOL_TIPS_PROPS = {
   offset: {
     type: Number | String,
     default: 10
-  },
-  // 辅助线配置
-  crossLine: {
-    type: Object,
-    default: () => {
-      return {
-        stroke: '#666', // 辅助线的颜色
-        lineWidth: 2, // 辅助线的宽度
-        lineDash: [2, 3] // 设置虚线样式
-      }
-    }
   },
   // 展示边距
   padding: {
@@ -53,11 +54,20 @@ const TOOL_TIPS_PROPS = {
   domStyles: {
     type: Object
   },
-  // 是否展示
-  showItemMarker: {
-    type: Boolean
+  // 是否展示自定义图形和提示的焦点配置
+  showMarker: {
+    type: Boolean,
+    default: false
+  },
+  // 自定义焦点样式配置
+  marker: {
+    type: Object
   },
   shared: {
+    type: Boolean
+  },
+  // 是否展示title，也就是X轴值
+  showTitle: {
     type: Boolean
   }
 }
