@@ -120,18 +120,20 @@ const setScale = function (chart, lineArray, data, config) {
  */
 const setToolTips = function (chart, ToolTips = []) {
   // 配置提示框
+  const toolConfig = ToolTips[0]
   if (!ToolTips.length) {
     chart.tooltip(false)
   } else {
     // 读取slot 对应的配置信息
     // 获取 itemTplFunc
-    if (ToolTips[0].itemTplFunc) {
-      const itemTpl = ToolTips[0].itemTplFunc()
-      ToolTips[0].itemTpl = itemTpl
-      chart.tooltip(ToolTips[0])
-    } else {
-      chart.tooltip()
+    // 对单独的tooltips 执行判断
+    const { visible } = toolConfig
+    // 如果不展示， 默认不读取
+    if (!visible) {
+      chart.tooltip(false)
+      return chart
     }
+    chart.tooltip(toolConfig)
   }
   return chart
 }
@@ -206,20 +208,8 @@ const setAxis = function (chart, axisConfig) {
  */
 const getChartColor = function (chart) {
   const result = []
-  let tag = false
-  if (chart.id === 'view3') {
-    tag = true
-    console.log('themeObject', chart)
-    console.log('themeObject', chart.themeObject)
-  }
   chart.geometries.forEach(geom => {
     const { theme, attributeOption } = geom
-    if (tag) {
-      console.log('====================================')
-      console.log(geom.dataArray)
-      console.log(chart)
-      console.log('====================================')
-    }
     if (!theme) {
       const { color, position } = attributeOption
       result.push({
@@ -315,6 +305,15 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
     }
     if (result.length) {
       result.forEach(i => {
+        // 获取 legend上的所有配置
+        //
+        for (const key in i) {
+          if (Object.hasOwnProperty.call(i, key)) {
+            const element = i[key]
+            // 针对 i 下属属性做一个深层次的判断
+
+          }
+        }
         const { marker = {} } = i
         defaultMarker = mergeDeep(defaultMarker, marker)
       })
@@ -365,12 +364,27 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
     }
   }
 
+  function getGolbalConfig (legends) {
+    let result = {}
+    legends.forEach(item => {
+      result = mergeDeep(result, item)
+    })
+    return result
+  };
+
   // 优先走默认的Chart组件上的配置，然后再走legend的配置。如果都没有则走系统默认的配置
   if (config && isObject(config)) {
     chart.legend(setConfig(config))
   } else if (isArray(legends)) {
     const defaultConfig = setConfig(names, legends)
-    chart.legend(defaultConfig)
+    // 获取通用的全局配置
+    // getGolbalConfig
+    const golbalConfig = getGolbalConfig(legends)
+    console.log('====================================');
+    console.log(golbalConfig);
+    console.log('====================================');
+    const lastConfig = Object.assign(golbalConfig, defaultConfig)
+    chart.legend(lastConfig)
   } else {
     chart.legend(false)
   }
