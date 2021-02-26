@@ -16,7 +16,7 @@ const LEGEND_PROPS = {
   position: {
     type: String,
     validator: function (value) {
-      const values = ['top', 'top-left', 'top-right', 'right', 'right-top', 'right-bottom', 'left', 'left-top', 'left-bottom', 'bottom', 'bottom-left', 'bottom-right']
+      const values = ['top', 'top-left', 'top-right', 'right', 'right-top', 'right-bottom', 'left', 'left-top', 'left-bottom', 'bottom', 'bottom-left', 'bottom-right', 'bottom-center']
       return values.indexOf(value) !== -1
     }
   },
@@ -28,7 +28,7 @@ const LEGEND_PROPS = {
   flipPage: {
     type: Boolean
   },
-  // 适用于 连续图例，
+  // 适用于 连续图例，滑块的配置项
   handler: {
     type: Object
   },
@@ -40,7 +40,7 @@ const LEGEND_PROPS = {
   itemWidth: {
     type: Number
   },
-  // 适用于 分类图例，图例的高度，默认为 null。
+  // 适用于 分类图例，图例名称的配置。
   itemName: {
     type: Object
   },
@@ -48,7 +48,7 @@ const LEGEND_PROPS = {
   itemSpace: {
     type: Number
   },
-  // itemValue
+  // itemValue, 图例项 value 附加值的配置项
   itemValue: {
     type: Object
   },
@@ -115,15 +115,15 @@ const LEGEND_PROPS = {
   // 适用于 连续图例，选择的值。
   values: {
     type: Number
-  },
-  // 是否为自定义图例，当该属性为 true 时，需要声明 items 属性。
-  custom: {
-    type: Boolean
-  },
-  // 适用于 分类图例，用户自己配置图例项的内容
-  items: {
-    type: Object
   }
+  // 是否为自定义图例，当该属性为 true 时，需要声明 items 属性。
+  // custom: {
+  //   type: Boolean
+  // },
+  // // 适用于 分类图例，用户自己配置图例项的内容
+  // items: {
+  //   type: Object
+  // }
 }
 
 export default LEGEND_PROPS
