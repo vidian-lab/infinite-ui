@@ -20,10 +20,10 @@ const config = {
   '@antv/coord/lib/factory': '@antv/coord/lib/factory',
   '@antv/g-canvas': '@antv/g-canvas',
   // 公共依赖
-  // 'infinite-ui/packages/utils/index': 'infinite-ui/lib/utils/index',
-  // 'infinite-ui/packages/mixins/chart': 'infinite-ui/lib/mixins/chart'
-  'infinite-ui/packages/utils/index': 'finite-ui-wz/lib/utils/index',
-  'infinite-ui/packages/mixins/chart': 'finite-ui-wz/lib/mixins/chart'
+  'infinite-ui/packages/utils/index': 'infinite-ui/lib/utils/index',
+  'infinite-ui/packages/mixins/chart': 'infinite-ui/lib/mixins/chart'
+  // 'infinite-ui/packages/utils/index': 'finite-ui-wz/lib/utils/index',
+  // 'infinite-ui/packages/mixins/chart': 'finite-ui-wz/lib/mixins/chart'
 }
 
 elComponentList.forEach(file => {
