@@ -73,6 +73,7 @@ const isInteger = function (value) {
 const setScale = function (chart, lineArray, data, config) {
   // 首先获取 配置数据
   const result = []
+  let { tickCount = 5 } = config
   lineArray.forEach(item => {
     // position 必选
     const { position } = item
@@ -84,9 +85,9 @@ const setScale = function (chart, lineArray, data, config) {
       }
     })
   })
-  const { min, max } = getCommonScale(result)
+  const { min, max } = getCommonScale(result, tickCount)
   // 设置通用配置值
-  const defaultScale = { min, max, nice: true }
+  const defaultScale = { min, max, nice: true, tickCount }
   // 传入一个配置，并且没有指明name
   // 统一配置各配置的配置
   if (typeof config === 'object' && !Array.isArray(config)) {
@@ -306,14 +307,6 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
     if (result.length) {
       result.forEach(i => {
         // 获取 legend上的所有配置
-        //
-        for (const key in i) {
-          if (Object.hasOwnProperty.call(i, key)) {
-            const element = i[key]
-            // 针对 i 下属属性做一个深层次的判断
-
-          }
-        }
         const { marker = {} } = i
         defaultMarker = mergeDeep(defaultMarker, marker)
       })
@@ -380,9 +373,6 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
     // 获取通用的全局配置
     // getGolbalConfig
     const golbalConfig = getGolbalConfig(legends)
-    console.log('====================================');
-    console.log(golbalConfig);
-    console.log('====================================');
     const lastConfig = Object.assign(golbalConfig, defaultConfig)
     chart.legend(lastConfig)
   } else {
