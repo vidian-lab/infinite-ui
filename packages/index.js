@@ -2,6 +2,11 @@
 // This file is auto gererated by build/build-entry.js
 import InfiniteButton from './infinite-button'
 import InfiniteCascaders from './infinite-cascaders'
+import InfiniteChart from './infinite-chart'
+import InfiniteChartAxis from './infinite-chart-axis'
+import InfiniteChartLegend from './infinite-chart-legend'
+import InfiniteChartLine from './infinite-chart-line'
+import InfiniteChartTooltips from './infinite-chart-tooltips'
 import InfiniteDialog from './infinite-dialog'
 import InfiniteForm from './infinite-form'
 import InfiniteLineChart from './infinite-line-chart'
@@ -14,15 +19,15 @@ import InfiniteTable from './infinite-table'
 import InfiniteTableColumn from './infinite-table-column'
 import InfiniteThemePicker from './infinite-theme-picker'
 import InfiniteTree from './infinite-tree'
-import InfiniteChart from './infinite-chart'
-import InfiniteChartAxis from './infinite-chart-axis'
-import InfiniteChartLine from './infinite-chart-line'
-import InfiniteChartToolTips from './infinite-chart-tooltips'
-import InfiniteChartLegend from './infinite-chart-legend'
-const version = '0.0.10'
+const version = '1.0.4'
 const components = [
   InfiniteButton,
   InfiniteCascaders,
+  InfiniteChart,
+  InfiniteChartAxis,
+  InfiniteChartLegend,
+  InfiniteChartLine,
+  InfiniteChartTooltips,
   InfiniteDialog,
   InfiniteForm,
   InfiniteLineChart,
@@ -34,18 +39,13 @@ const components = [
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,
-  InfiniteTree,
-  InfiniteChart,
-  InfiniteChartAxis,
-  InfiniteChartLine,
-  InfiniteChartToolTips,
-  InfiniteChartLegend
+  InfiniteTree
 ]
 const install = Vue => {
   components.forEach(Component => {
     Vue.use(Component)
   })
-};
+};  
 /* istanbul ignore if */
 if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue)
@@ -55,6 +55,11 @@ export {
   version,
   InfiniteButton,
   InfiniteCascaders,
+  InfiniteChart,
+  InfiniteChartAxis,
+  InfiniteChartLegend,
+  InfiniteChartLine,
+  InfiniteChartTooltips,
   InfiniteDialog,
   InfiniteForm,
   InfiniteLineChart,
@@ -66,18 +71,18 @@ export {
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,
-  InfiniteTree,
-  InfiniteChart,
-  InfiniteChartAxis,
-  InfiniteChartLine,
-  InfiniteChartToolTips,
-  InfiniteChartLegend
+  InfiniteTree
 }
 export default {
   install,
   version,
   InfiniteButton,
   InfiniteCascaders,
+  InfiniteChart,
+  InfiniteChartAxis,
+  InfiniteChartLegend,
+  InfiniteChartLine,
+  InfiniteChartTooltips,
   InfiniteDialog,
   InfiniteForm,
   InfiniteLineChart,
@@ -89,10 +94,6 @@ export default {
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,
-  InfiniteTree,
-  InfiniteChart,
-  InfiniteChartAxis,
-  InfiniteChartLine,
-  InfiniteChartToolTips,
-  InfiniteChartLegend
+  InfiniteTree
 }
+  
