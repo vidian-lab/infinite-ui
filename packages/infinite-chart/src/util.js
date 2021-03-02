@@ -255,7 +255,12 @@ const getNames = function (legends) {
       result.push(names.split(','))
     }
   })
-  return [...new Set(result)][0] || []
+  if (isArray([...new Set(result)][0])) {
+    return [...new Set(result)][0]
+  } else {
+    return []
+  }
+  // return [...new Set(result)][0] || []
 }
 
 const getIntervalColor = function (chart, name, intervalConfig, data) {
@@ -318,38 +323,19 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
         marker: defaultMarker
       }
     } else {
-      return {
-        name,
-        value: name,
-        marker: defaultMarker
-      }
+      // return {
+      //   name,
+      //   value: name,
+      //   marker: defaultMarker
+      // }
     }
   }
 
   function setConfig (names, legends) {
     const items = []
     names.forEach(item => {
-      if (isObject(item)) {
-        const { name, value, fill = '#ccc' } = item
-        const defaultConfig = getConfig(legends, name)
-        let config = {
-          name, // 展示的名称
-          value, // 对应的指标值
-          marker: {
-            symbol: 'square',
-            style: {
-              fill
-            }
-          }
-        }
-        if (defaultConfig) {
-          config = defaultConfig
-        }
-        items.push(config)
-      } else {
-        const defaultConfig = getConfig(legends, item)
-        items.push(defaultConfig)
-      }
+      const defaultConfig = getConfig(legends, item)
+      items.push(defaultConfig)
     })
     return {
       custom: true,
@@ -367,8 +353,8 @@ const setLegend = function (chart, legends, config, intervalConfig, type, data) 
 
   // 优先走默认的Chart组件上的配置，然后再走legend的配置。如果都没有则走系统默认的配置
   if (config && isObject(config)) {
-    chart.legend(setConfig(config))
-  } else if (isArray(legends)) {
+    chart.legend(setConfig(names, config))
+  } else if (isArray(legends) && legends.length) {
     const defaultConfig = setConfig(names, legends)
     // 获取通用的全局配置
     // getGolbalConfig
@@ -400,7 +386,6 @@ function mergeDeep (...objects) {
     Object.keys(obj).forEach(key => {
       const pVal = prev[key]
       const oVal = obj[key]
-
       if (Array.isArray(pVal) && Array.isArray(oVal)) {
         prev[key] = pVal.concat(...oVal)
       } else if (isObject(pVal) && isObject(oVal)) {
@@ -423,5 +408,7 @@ export {
   isInteger,
   getArraysBoundary,
   getDivision,
-  setLegend
+  setLegend,
+  getGeomColor,
+  mergeDeep
 }
