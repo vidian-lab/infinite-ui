@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import InfiniteChart from '@/packages/infinite-chart/src/Index.vue'
-import { getCommonScale, setAxis, setGemo, setScale, setToolTips, isInteger, getArraysBoundary, getDivision } from '@/packages/infinite-chart/src/util'
+import { getCommonScale, setAxis, setGemo, setScale, setToolTips, isInteger, getArraysBoundary, getDivision, setLegend, getGeomColor, mergeDeep } from '@/packages/infinite-chart/src/util'
 
 const option = {
   chartData: [
@@ -22,6 +22,12 @@ const option = {
     type: 'multi',
     position: 'name*value',
     multiName: 'type'
+  }
+}
+
+function createFunc () {
+  return function () {
+    return this
   }
 }
 
@@ -204,12 +210,23 @@ describe('test utils', () => {
     expect(setToolTips(params.chart, params.toolConfig)).toBe(params.chart)
   })
 
-  it('测试 setGemo 方法, 是否通过', () => {
-    function createFunc () {
-      return function () {
-        return this
-      }
+  it('测试 setToolTips 方法，直接配置config', () => {
+    const params = {
+      chart: {
+        tooltip: function () {}
+      },
+      toolConfig: [{
+        visible: true,
+        item: function () {
+          return '<div></div>'
+        }
+      }] // 原始数据
     }
+    // 原始
+    expect(setToolTips(params.chart, params.toolConfig)).toBe(params.chart)
+  })
+
+  it('测试 setGemo 方法, 是否通过', () => {
     const params = {
       chart: {
         tooltip: createFunc(),
@@ -224,7 +241,7 @@ describe('test utils', () => {
         day: 1,
         value: 2
       }], // 原始数据
-      intervalConfig: [], //
+      intervalConfig: {}, //
       GemoConfig: [{
         position: 'day*value',
         size: 1,
@@ -237,11 +254,6 @@ describe('test utils', () => {
   })
 
   it('测试 setGemo 方法, 是否通过', () => {
-    function createFunc () {
-      return function () {
-        return this
-      }
-    }
     const params = {
       chart: {
         tooltip: createFunc(),
@@ -256,23 +268,18 @@ describe('test utils', () => {
         day: 1,
         value: 2
       }], // 原始数据
-      intervalConfig: [{
+      intervalConfig: {
         position: 'day*value',
         size: 1,
         shape: 'smooth',
         color: '#fff'
-      }]
+      }
     }
     // 原始
     expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
   })
 
   it('测试 setGemo 方法, 是否通过', () => {
-    function createFunc () {
-      return function () {
-        return this
-      }
-    }
     const params = {
       chart: {
         tooltip: createFunc(),
@@ -295,15 +302,37 @@ describe('test utils', () => {
       }
     }
     // 原始
-    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe('请最少传入一个配置')
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
+  })
+  it('测试 setGemo 方法, 是否通过', () => {
+    const params = {
+      chart: {
+        tooltip: createFunc(),
+        interval: createFunc(),
+        size: createFunc(),
+        position: createFunc(),
+        shape: createFunc(),
+        color: createFunc(),
+        adjust: createFunc()
+      },
+      type: 'interval',
+      testData: [{
+        day: 1,
+        value: 2
+      }], // 原始数据
+      intervalConfig: {
+        position: 'day*value',
+        size: 1,
+        shape: 'smooth',
+        color: '#fff',
+        type: 'interval'
+      }
+    }
+    // 原始
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params.GemoConfig)).toBe(params.chart)
   })
 
   it('测试 setGemo 方法, 使用GemoConfig配置', () => {
-    function createFunc() {
-      return function () {
-        return this
-      }
-    }
     const params = {
       chart: {
         tooltip: createFunc(),
@@ -311,7 +340,9 @@ describe('test utils', () => {
         interval: createFunc(),
         position: createFunc(),
         color: createFunc(),
-        adjust: createFunc()
+        adjust: createFunc(),
+        size: createFunc(),
+        shape: createFunc()
       },
       type: 'interval',
       GemoConfig: [{
@@ -334,7 +365,7 @@ describe('test utils', () => {
       }]
     }
     // 原始
-    expect(setGemo(params.chart, params.type, params.intervalConfig, params)).toBe('请最少传入一个配置')
+    expect(setGemo(params.chart, params.type, params.intervalConfig, params)).toBe(params.chart)
   })
 
   it('测试 setGemo 方法, 配置异常参数，是否捕获', () => {
@@ -360,7 +391,136 @@ describe('test utils', () => {
 
   it('测试  getDivision 方法', () => {
     const data = { min: 90, max: 500 }
-    // 原始
     expect(getDivision(data)).toStrictEqual([60, 500])
+  })
+
+  it('测试 setLegend 方法 ', () => {
+    const params = {
+      chart: {
+        legend: createFunc(),
+        geometries: []
+      },
+      config: {},
+      legends: [{}]
+    }
+    expect(setLegend(params.chart, params.legends, params.config)).toBe(params.chart)
+  })
+
+  it('测试 setLegend 方法, 只走 ', () => {
+    const params = {
+      chart: {
+        legend: createFunc(),
+        geometries: []
+      },
+      config: {},
+      legends: [{}]
+    }
+    expect(setLegend(params.chart, params.legends, params.config)).toBe(params.chart)
+  })
+
+  it('测试 setLegend 方法，分支情况，config 不存在 ', () => {
+    const params = {
+      chart: {
+        legend: createFunc(),
+        geometries: [{
+          theme: false,
+          attributeOption: {
+            color: {
+              filed: ['#fff']
+            },
+            position: {
+              field: ['name', 'China']
+            }
+          }
+        }],
+        themeObject: {
+          colors10: ['#f00', '#ff0']
+        }
+      },
+      legends: [{
+        names: ['China']
+      }, {
+        names: 'China, Japan'
+      }],
+      intervalConfig: {
+        type: 'multi',
+        position: 'name*value',
+        multiName: 'type'
+      },
+      type: 'interval',
+      data: [{
+        type: 'name',
+        name: 'China',
+        value: 100
+      }]
+    }
+    expect(setLegend(params.chart, params.legends, undefined, params.intervalConfig, params.type, params.data)).toBe(params.chart)
+  })
+
+  it('测试 setLegend 方法，分支情况，不存在legend的相关配置 ', () => {
+    const params = {
+      chart: {
+        legend: createFunc(),
+        geometries: [{
+          theme: false,
+          attributeOption: {
+            color: {
+              filed: ['#fff']
+            },
+            position: {
+              field: ['name', 'China']
+            }
+          }
+        }],
+        themeObject: {
+          colors10: ['#f00', '#ff0']
+        }
+      },
+      legends: [],
+      data: [{
+
+      }]
+    }
+    expect(setLegend(params.chart, params.legends)).toBe(params.chart)
+  })
+
+  it('测试 getGeomColor 方法， 错误入参情况是否✅ ', () => {
+    const params = {
+      colors: null
+    }
+    expect(getGeomColor(params.colors)).toBe('入参不符合规范')
+  })
+
+  it('测试 getGeomColor 方法， 返回colors，position 对应name 是否✅ ', () => {
+    const params = {
+      colors: [{
+        position: {
+          fields: ['name', 'China']
+        },
+        color: {
+          fields: ['#f00']
+        }
+      }]
+    }
+    expect(getGeomColor(params.colors, 'China')).toStrictEqual(['#f00'])
+  })
+})
+
+describe('test function', () => {
+  it('mergeDeep 深拷贝函数', () => {
+    const obj1 = {
+      a: 1,
+      b: {
+        c: 2,
+        d: [3, 2, 1]
+      }
+    }
+    const obj2 = {
+      b: {
+        d: [4]
+      }
+    }
+    const result = { 'a': 1, 'b': { 'c': 2, 'd': [3, 2, 1, 4] } }
+    expect(mergeDeep(obj1, obj2)).toStrictEqual(result)
   })
 })
