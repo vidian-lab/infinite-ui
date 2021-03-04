@@ -21,7 +21,7 @@ const propsConfig = {
   },
   // 接受度量衡缩放
   scale: {
-    type: Array | Object,
+    type: Object,
     default: () => {
       return []
     }
