@@ -23,7 +23,7 @@ const propsConfig = {
   scale: {
     type: Object,
     default: () => {
-      return []
+      return {}
     }
   },
   // 类型

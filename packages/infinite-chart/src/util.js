@@ -47,7 +47,6 @@ const getDivision = function (division, tick = 4) {
   // 根据 差值长度，判断是否需要多层次判断。根据差值的长度来判断
   // 获取步进差值, 最大值为3位数，10，2位数则为1
   let step = Math.pow(10, (max + '').length - 2)
-
   let realStep = Math.ceil(result / step) * step
   let endStep = Math.ceil(max / step) * step
   let startStep = endStep - tick * realStep
@@ -67,7 +66,7 @@ const isInteger = function (value) {
  * @param {Object} chart chart 对象
  * @param {Array} lineArray Gemo的配置
  * @param {Array} data 原始数据
- * @param {Array/Object} config
+ * @param {Object} config
  * @returns {chart} chart 对象
  */
 const setScale = function (chart, lineArray, data, config) {
@@ -90,7 +89,7 @@ const setScale = function (chart, lineArray, data, config) {
   const defaultScale = { min, max, nice: true, tickCount }
   // 传入一个配置，并且没有指明name
   // 统一配置各配置的配置
-  if (typeof config === 'object' && !Array.isArray(config)) {
+  if (isObject(config)) {
     Object.assign(defaultScale, config)
   }
   // 遍历设置scale
@@ -101,15 +100,12 @@ const setScale = function (chart, lineArray, data, config) {
     chart.scale(key, lastConfig)
   })
 
-  function getConfig (config = [], name) {
-    // 增加类型判断
-    if (Array.isArray(config)) {
-      return config.find((item) => {
-        return item.name === name
-      })?.config || {}
-    } else {
-      return config || {}
+  function getConfig (config = {}, name) {
+    if (name in config) {
+      return config[name].config || {}
     }
+    // 没有就返回全部config
+    return config || {}
   }
   return chart
 }

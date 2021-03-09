@@ -97,15 +97,15 @@
 
 ### Attributes
 
-| 参数          | 说明                                      | 类型    | 可选值 | 默认值                                    |
-| ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
-| chart-data   | 渲染数据                                   | Array   | —      | —                                         |
-| autoFit      | 是否自适应屏幕                              | Boolean | —      |true                                     |
-| width        | 图表宽度                              | String/ Number  | —      | 600 |
-| height       | 图表高度                                   | String/ Number  | —      | 400                             |
-| scale        | 接受度量衡缩放                              | Array | —      | true                                      |
-| type         | 图形图标类型                               | String | line/interval      | line |
-| interval-config| 柱状图，是否采取分组模式，还是串行模式,以及配置  | Object   | —      | -                      |
+| 参数            | 说明          | 类型    | 可选值 | 默认值   |
+| ------------   | --------      | ------- | ------ | -----------|
+| chart-data     | 渲染数据       | Array   | —      | —   |
+| autoFit        | 是否自适应屏幕  | Boolean | —      |true    |
+| width          | 图表宽度       | String/ Number  | —      | 600 |
+| height         | 图表高度       | String/ Number  | —      | 400    |
+| scale          | 接受度量衡缩放  | Object | —      | —     |
+| type           | 图形图标类型    | String | line/interval  | line |
+| interval-config| 柱状图，是否采取分组模式，还是串行模式,以及配置  | Object   | —      | -         |
 
 
 
@@ -216,13 +216,13 @@
 Chart 内部图形基类
 ### Attributes
 
-| 参数         | 说明                                     | 类型    | 可选值 | 默认值                                    |
-| ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
-| smooth         | 是否平滑过渡                             | Boolean   | true/false     | true                                         |
-| shape   | 坐标轴名称                               | Object  | —      | —                                         |
-| position   | 映射的字段,类似x*y.此字段强约束                  | String  | —      | 必选 |
-| size | 宽度                                   | String/Number  | —      | 1                     |
-| color  | 颜色                             | String | —      | ——                                   |
+| 参数        | 说明   | 类型    | 可选值 | 默认值   |
+| ---------  | ------ | ------- | ------ | --------|
+| smooth     | 是否平滑过渡   | Boolean   | true/false     |true    |
+| shape      | 坐标轴名称  | Object  | —      | —     |
+| position   | 映射的字段,类似x*y.此字段强约束   | String  | —      | 必选 |
+| size       | 宽度     | String/Number  | —      | 1   |
+| color      | 颜色     | String | —      | ——      |
 
 ### Infinite-Chart-ToolTips
 Chart 内部提示框
