@@ -1,0 +1,6 @@
+@import './common/var.scss';
+@import '../../../node_modules/element-ui/packages/theme-chalk/src/option.scss';
+
+.el-select-dropdown__item.hover span {
+  color: $--color-primary;
+}

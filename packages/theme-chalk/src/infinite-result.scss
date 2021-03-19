@@ -1,0 +1,49 @@
+@import './common/var.scss';
+
+.infinite-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 32px;
+
+  &-status {
+    display: flex;
+    font-size: 80px;
+    margin-bottom: 20px;
+    color: $--color-primary;
+
+    &.is-success {
+      color: $--color-success;
+    }
+
+    &.is-info {
+      color: $--color-primary;
+    }
+
+    &.is-warning {
+      color: $--color-warning;
+    }
+
+    &.is-error {
+      color: $--color-danger;
+    }
+  }
+
+  &-title {
+    color: $--color-text-primary;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  &-subtitle {
+    color: rgba($--color-text-primary, 0.45);
+    font-size: 14px;
+    text-align: center;
+  }
+
+
+  &-extra {
+    margin: 24px 0 0;
+    text-align: center;
+  }
+}

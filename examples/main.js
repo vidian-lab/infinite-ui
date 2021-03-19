@@ -15,12 +15,13 @@ import packages from '../packages'
 for (const key in packages) {
   if (packages.hasOwnProperty(key)) {
     const element = packages[key]
-    if (key.toLocaleLowerCase().includes('infinite')) {
+    if (element.install && element.name.toLocaleLowerCase().includes('infinite')) {
       Vue.use(element)
     };
   }
 }
-
+const { InfiniteDownload } = packages
+Vue.prototype.$InfiniteDownload = InfiniteDownload
 Vue.config.productionTip = false
 
 Vue.component('demo-block', demoBlock)

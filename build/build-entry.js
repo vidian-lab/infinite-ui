@@ -30,7 +30,11 @@ const components = [
 ]
 const install = Vue => {
   components.forEach(Component => {
-    Vue.use(Component)
+    if (Component.install && Component.name.toLocaleLowerCase().includes('infinite')) {
+      Vue.use(Component)
+    }else{
+      Vue.prototype[\`\$\${Component.name}\`] = Component
+    }
   })
 };  
 /* istanbul ignore if */

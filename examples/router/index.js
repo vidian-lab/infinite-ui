@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '@/views'
 import animateIndex from '@/views/animateIndex'
+import download from '@/docs/Download.md'
 import { getFileList } from './generate'
 const Installation = require('./docs').Installation
 
@@ -33,7 +34,12 @@ const routes = [
         name: 'installation',
         component: Installation
       },
-      ...generateRouters
+      ...generateRouters,
+      {
+        path: 'download',
+        name: 'download',
+        component: download
+      }
     ]
   }
 ]

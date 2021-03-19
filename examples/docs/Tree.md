@@ -15,6 +15,7 @@ Tree 增删改及自定义编辑功能。
       :data="treeData"
       :is-edit-node="isEditNode"
       :edit-inputs="editInputs"
+      :before-delete="beforeDelete"
       @addNodeBefore="addNodeBefore"
       @editNodeBefore="editNodeBefore"
       @handlerSave="handlerSave"
@@ -89,7 +90,7 @@ Tree 增删改及自定义编辑功能。
             placeholder: '请输入资源名称',
             sameNameError: '资源名称重复',
             sameNameValiMode: 'local',
-            validateFun: (value) => {
+            validateFun: (value, node) => {
               const regEN = /[`~!@#$%^&*()-+<>?:="{}\_,.\/;'[\]]/im;
               const regCN = /[·！#￥（——）：；”“‘’，……|《。》？、【】[\]]/im;
               const regCEN = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g;
@@ -183,6 +184,16 @@ Tree 增删改及自定义编辑功能。
         this.$refs.infiniteTreeRef.isInOperation(() => {
           this.isEditNode = !this.isEditNode;
         });
+      },
+      // 移除之前,如果存在子集，不允移除
+      beforeDelete(node) {
+        if (node.childNodes && node.childNodes.length) {
+          this.$message.warning('存在子节点，不能移除');
+          return false;
+        } else {
+          return true;
+        }
+        return;
       },
       // 删除完成
       handlerDelete() {
@@ -513,6 +524,269 @@ Tree 自定义增删改，新增拖拽成功后撤回功能。
 
 :::
 
+### 配置节点操作按钮
+
+Tree 根据配置对象操作按钮
+:::demo `node-operation-btns-prop`属性可以配置增删改按钮的 icon 及创建前的回调来控制按钮显隐
+
+```html
+<template>
+  <div>
+    <infinite-button @click="addRootNode">添加根节点</infinite-button>
+    <infinite-button @click="editSwitch">编辑开关</infinite-button>
+    <infinite-tree
+      ref="infiniteTreeRef"
+      :data="treeData"
+      :is-edit-node="isEditNode"
+      :edit-inputs="editInputs"
+      :node-operation-btns-prop="nodeOperationBtnsProp"
+      @addNodeBefore="addNodeBefore"
+      @editNodeBefore="editNodeBefore"
+      @handlerSave="handlerSave"
+      @handlerDelete="handlerDelete"
+    >
+    </infinite-tree>
+    <infinite-button @click="confirm">提交</infinite-button>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        treeData: [
+          {
+            id: 10,
+            label: '资源1',
+            number: '1',
+            children: [
+              {
+                id: 11,
+                label: '资源11',
+                number: '11',
+                children: [
+                  {
+                    id: 111,
+                    label: '资源111',
+                    number: '111',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 20,
+            label: '资源2',
+            number: '2',
+            children: [
+              {
+                id: 21,
+                label: '资源21',
+                number: '21',
+                children: [
+                  {
+                    id: 211,
+                    label: '资源211',
+                    number: '211',
+                  },
+                ],
+              },
+              {
+                id: 22,
+                label: '资源22',
+                number: '22',
+                children: [
+                  {
+                    id: 212,
+                    label: '资源221',
+                    number: '221',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        localNotify: null,
+        isEditNode: true,
+        // 编辑中输入框
+        editInputs: [
+          {
+            id: 'label',
+            placeholder: '请输入资源名称',
+            sameNameError: '资源名称重复',
+            sameNameValiMode: 'local',
+            validateFun: (value) => {
+              const regEN = /[`~!@#$%^&*()-+<>?:="{}\_,.\/;'[\]]/im;
+              const regCN = /[·！#￥（——）：；”“‘’，……|《。》？、【】[\]]/im;
+              const regCEN = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g;
+              if (!value) {
+                return '请输入资源名称';
+              } else if (
+                !this.validLength(value, 0) ||
+                this.validLength(value, 42)
+              ) {
+                return '请输入1-42位资源名称';
+              } else if (
+                regEN.test(value) ||
+                regCN.test(value) ||
+                regCEN.test(value)
+              ) {
+                return '资源名称仅支持中文、数字、英文';
+              } else {
+                return '';
+              }
+            },
+          },
+          {
+            id: 'number',
+            placeholder: '资源ID,支持数字、英文、"-"，1-16位',
+            disabled: false,
+            hidden: false,
+            sameNameError: '资源编号重复',
+            sameNameValiMode: 'overall',
+            validateFun: (value) => {
+              const regNum = new RegExp(
+                '^(?=.*[A-Za-z0-9])[A-Za-z0-9-]{1,16}$'
+              );
+              if (!value) {
+                return '请输入资源编号';
+              } else if (!regNum.test(value)) {
+                return "资源ID,支持数字、英文、' - '，1-16位";
+              } else {
+                return '';
+              }
+            },
+          },
+        ],
+        // 操作按钮配置对象
+        nodeOperationBtnsProp: {
+          add: {
+            icon: 'el-icon-plus',
+            beforeCreate(node) {
+              if (node.level === 3) {
+                return false;
+              }
+              return true;
+            },
+          },
+          delete: {
+            icon: 'el-icon-minus',
+            beforeCreate(node) {
+              if (node.data.children && node.data.children.length) {
+                return false;
+              }
+              return true;
+            },
+          },
+          edit: {
+            beforeCreate() {
+              return false;
+            },
+          },
+        },
+      };
+    },
+    methods: {
+      // 长度校验
+      validLength(value, maxLength) {
+        const count = this.parseLength(value);
+        return this.getStrlength(value) > maxLength || count > maxLength;
+      },
+      getStrlength(str) {
+        let len = 0;
+        for (let i = 0; len < str.length; i++) {
+          if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
+            len += 2;
+          } else {
+            len++;
+          }
+        }
+        return len;
+      },
+      parseLength(value) {
+        const regChinese = /[\u4e00-\u9fa5]/g;
+        const regEning = /[A-Za-z]/g;
+        const cLength = value.match(regChinese)
+          ? value.match(regChinese).length
+          : 0;
+        const eLength = value.match(regEning)
+          ? value.match(regEning).length
+          : 0;
+        const count = cLength * 2 + eLength * 1;
+        return count || 0;
+      },
+      // 新增节点之前
+      addNodeBefore() {
+        // 开放资源ID输入框
+        this.editInputs[1].disabled = false;
+      },
+      // 编辑节点之前
+      editNodeBefore(data, node) {
+        // 禁用资源ID输入框
+        this.editInputs[1].disabled = !data.outer;
+      },
+      // 添加根节点
+      addRootNode() {
+        this.editInputs[1].disabled = false;
+        this.$refs.infiniteTreeRef.addRootNode();
+      },
+      // 编辑开关
+      editSwitch() {
+        this.$refs.infiniteTreeRef.isInOperation(() => {
+          this.isEditNode = !this.isEditNode;
+        });
+      },
+      // 删除完成
+      handlerDelete() {
+        const h = this.$createElement;
+        // 删除提示
+        this.localNotify && this.localNotify.close();
+        this.localNotify = this.$notify({
+          type: 'success',
+          title: '操作提示',
+          message: h('div', [
+            '删除成功',
+            h(
+              'infiniteButton',
+              {
+                props: {
+                  type: 'text',
+                },
+                on: {
+                  click: () => {
+                    // 撤销功能
+                    this.$refs.infiniteTreeRef.revocationDel();
+                    this.localNotify.close();
+                  },
+                },
+              },
+              '撤销'
+            ),
+          ]),
+          dangerouslyUseHTMLString: true,
+          duration: 3000,
+        });
+      },
+      // 保存完成
+      handlerSave() {
+        this.$notify({
+          type: 'success',
+          title: '操作提示',
+          message: '保存成功！',
+          duration: 2000,
+        });
+      },
+      confirm() {
+        this.$refs.infiniteTreeRef.isInOperation(() => {
+          console.log(this.treeData);
+        });
+      },
+    },
+  };
+</script>
+```
+
+:::
+
 ### 高亮/复选框/禁用使用
 
 Tree 新增高亮方法。
@@ -634,38 +908,42 @@ Tree 自定义插槽内容
 
 ### Attributes
 
-| 参数                    | 说明                                                                                                                                       | 类型                                   | 可选值 | 默认值           |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- | ------ | ---------------- |
-| data                    | 展示数据                                                                                                                                   | Array                                  | —      | —                |
-| is-edit-node            | 是否可编辑子节点                                                                                                                           | Boolean                                | —      | false            |
-| edit-inputs             | 编辑时对应的输入框，具体看下表                                                                                                             | Array                                  | —      | —                |
-| edit-component-size     | 节点编辑时，对应输入框按钮大小                                                                                                             | String                                 | —      | 'mini'           |
-| tree-line               | 节点连接线                                                                                                                                 | Boolean                                | —      | true             |
-| same-operation-error    | 可编辑时，重复操作提示内容                                                                                                                 | String                                 | —      | 请先完成当前操作 |
-| is-auto-expand-children | 拖拽时，且拖拽至目标节点停留时，是否默认展开目标节点                                                                                       | Boolean                                | —      | true             |
-| empty-text              | 内容为空的时候展示的文本                                                                                                                   | String                                 | —      | —                |
-| node-key                | 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的                                                                                       | String                                 | —      | id               |
-| props                   | 配置选项，具体看下表                                                                                                                       | object                                 | —      | —                |
-| render-after-expand     | 是否在第一次展开某个树节点后才渲染其子节点                                                                                                 | boolean                                | —      | true             |
-| load                    | 加载子树数据的方法，仅当 lazy 属性为 true 时生效                                                                                           | function(node, resolve)                | —      | —                |
-| render-content          | 树节点的内容区的渲染 Function                                                                                                              | Function(h, { node, data, store }      | —      | —                |
-| highlight-current       | 是否高亮当前选中节点，默认值是 false。                                                                                                     | boolean                                | —      | false            |
-| default-expand-all      | 是否默认展开所有节点                                                                                                                       | boolean                                | —      | false            |
-| expand-on-click-node    | 是否在点击节点的时候展开或者收缩节点， 默认值为 true，如果为 false，则只有点箭头图标的时候才会展开或者收缩节点。                           | boolean                                | —      | true             |
-| check-on-click-node     | 是否在点击节点的时候选中节点，默认值为 false，即只有在点击复选框时才会选中节点。                                                           | boolean                                | —      | false            |
-| auto-expand-parent      | 展开子节点的时候是否自动展开父节点                                                                                                         | boolean                                | —      | true             |
-| default-expanded-keys   | 默认展开的节点的 key 的数组                                                                                                                | array                                  | —      | —                |
-| show-checkbox           | 节点是否可被选择                                                                                                                           | boolean                                | —      | false            |
-| check-strictly          | 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false                                                                     | boolean                                | —      | false            |
-| default-checked-keys    | 默认勾选的节点的 key 的数组                                                                                                                | array                                  | —      | —                |
-| current-node-key        | 当前选中的节点                                                                                                                             | string, number                         | —      | —                |
-| filter-node-method      | 对树节点进行筛选时执行的方法，返回 true 表示这个节点可以显示，返回 false 则表示这个节点会被隐藏                                            | Function(value, data, node)            | —      | —                |
-| accordion               | 是否每次只打开一个同级树节点展开                                                                                                           | boolean                                | —      | false            |
-| icon-class              | 自定义树节点的图标                                                                                                                         | string                                 | -      | -                |
-| lazy                    | 是否懒加载子节点，需与 load 方法结合使用                                                                                                   | boolean                                | —      | false            |
-| draggable               | 是否开启拖拽节点功能                                                                                                                       | boolean                                | —      | false            |
-| allow-drag              | 判断节点能否被拖拽                                                                                                                         | Function(node)                         | —      | —                |
-| allow-drop              | 拖拽时判定目标节点能否被放置。`type` 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后 | Function(draggingNode, dropNode, type) | —      | —                |
+| 参数                     | 说明                                                                                                                                         | 类型                                   | 可选值 | 默认值           |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ------ | ---------------- |
+| data                     | 展示数据                                                                                                                                     | Array                                  | —      | —                |
+| is-edit-node             | 是否可编辑子节点                                                                                                                             | Boolean                                | —      | false            |
+| edit-inputs              | 编辑时对应的输入框，具体看下表                                                                                                               | Array                                  | —      | —                |
+| edit-component-size      | 节点编辑时，对应输入框按钮大小                                                                                                               | String                                 | —      | 'mini'           |
+| tree-line                | 节点连接线                                                                                                                                   | Boolean                                | —      | true             |
+| same-operation-error     | 可编辑时，重复操作提示内容                                                                                                                   | String                                 | —      | 请先完成当前操作 |
+| is-auto-expand-children  | 拖拽时，且拖拽至目标节点停留时，是否默认展开目标节点                                                                                         | Boolean                                | —      | true             |
+| beforeAdd                | 添加节点前的 Callback，如果 callback 返回 true 则允 添加，否则不添加                                                                         | Function(node)                         | —      | true             |
+| beforeEdit               | 编辑节点前的 Callback，如果 callback 返回 true 则允编辑，否则不编辑                                                                          | Function(node)                         | —      | true             |
+| beforeDelete             | 移除节点前的 Callback，如果 callback 返回 true 则允移除，否则不移除                                                                          | Function(node)                         | —      | true             |
+| node-operation-btns-prop | 节点上增删改操作按钮配置对象,这里提供 3 个按钮属性的配置，分别为`add` `delete` `edit` 可在 `node-operation-btns-prop Attributes`查看具体属性 | Object                                 | —      | —                |
+| empty-text               | 内容为空的时候展示的文本                                                                                                                     | String                                 | —      | —                |
+| node-key                 | 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的                                                                                         | String                                 | —      | id               |
+| props                    | 配置选项，具体看下表                                                                                                                         | object                                 | —      | —                |
+| render-after-expand      | 是否在第一次展开某个树节点后才渲染其子节点                                                                                                   | boolean                                | —      | true             |
+| load                     | 加载子树数据的方法，仅当 lazy 属性为 true 时生效                                                                                             | function(node, resolve)                | —      | —                |
+| render-content           | 树节点的内容区的渲染 Function                                                                                                                | Function(h, { node, data, store }      | —      | —                |
+| highlight-current        | 是否高亮当前选中节点，默认值是 false。                                                                                                       | boolean                                | —      | false            |
+| default-expand-all       | 是否默认展开所有节点                                                                                                                         | boolean                                | —      | false            |
+| expand-on-click-node     | 是否在点击节点的时候展开或者收缩节点， 默认值为 true，如果为 false，则只有点箭头图标的时候才会展开或者收缩节点。                             | boolean                                | —      | true             |
+| check-on-click-node      | 是否在点击节点的时候选中节点，默认值为 false，即只有在点击复选框时才会选中节点。                                                             | boolean                                | —      | false            |
+| auto-expand-parent       | 展开子节点的时候是否自动展开父节点                                                                                                           | boolean                                | —      | true             |
+| default-expanded-keys    | 默认展开的节点的 key 的数组                                                                                                                  | array                                  | —      | —                |
+| show-checkbox            | 节点是否可被选择                                                                                                                             | boolean                                | —      | false            |
+| check-strictly           | 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false                                                                       | boolean                                | —      | false            |
+| default-checked-keys     | 默认勾选的节点的 key 的数组                                                                                                                  | array                                  | —      | —                |
+| current-node-key         | 当前选中的节点                                                                                                                               | string, number                         | —      | —                |
+| filter-node-method       | 对树节点进行筛选时执行的方法，返回 true 表示这个节点可以显示，返回 false 则表示这个节点会被隐藏                                              | Function(value, data, node)            | —      | —                |
+| accordion                | 是否每次只打开一个同级树节点展开                                                                                                             | boolean                                | —      | false            |
+| icon-class               | 自定义树节点的图标                                                                                                                           | string                                 | -      | -                |
+| lazy                     | 是否懒加载子节点，需与 load 方法结合使用                                                                                                     | boolean                                | —      | false            |
+| draggable                | 是否开启拖拽节点功能                                                                                                                         | boolean                                | —      | false            |
+| allow-drag               | 判断节点能否被拖拽                                                                                                                           | Function(node)                         | —      | —                |
+| allow-drop               | 拖拽时判定目标节点能否被放置。`type` 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后   | Function(draggingNode, dropNode, type) | —      | —                |
 
 ### props Attributes
 
@@ -685,6 +963,14 @@ Tree 自定义插槽内容
 | validateFun      | 输入框内容校验                                       | Function(value) | —                  | —      |
 | disabled         | 是否禁用                                             | Boolean         | —                  | false  |
 | hidden           | 是否隐藏，注意：这里隐藏后将不做输入框及同名校验     | Boolean         | —                  | false  |
+| defaultValue     | 新增节点时，设置为默认的输入框值                     | String          | —                  | —      |
+
+### node-operation-btns-prop Attributes
+
+| 参数         | 说明                  | 类型             | 可选值 | 默认值        |
+| ------------ | --------------------- | ---------------- | ------ | ------------- |
+| icon         | 操作按钮的 icon-class | String           | —      | —             |
+| beforeCreate | 创建按钮前的回调      | Function(node){} | —      | `return true` |
 
 ### Function
 

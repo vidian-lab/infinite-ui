@@ -24,7 +24,6 @@
 </template>
 <script>
 import HeaderModel from './components/header'
-console.log(222)
 export default {
   components: {
     HeaderModel

@@ -3,13 +3,19 @@
 import InfiniteButton from './infinite-button'
 import InfiniteCascaders from './infinite-cascaders'
 import InfiniteDialog from './infinite-dialog'
+import InfiniteDownload from './infinite-download'
 import InfiniteForm from './infinite-form'
 import InfiniteLineChart from './infinite-line-chart'
 import InfiniteNavMenu from './infinite-nav-menu'
+import InfiniteOption from './infinite-option'
 import InfinitePagination from './infinite-pagination'
 import InfinitePieChart from './infinite-pie-chart'
+import InfiniteResult from './infinite-result'
+import InfiniteSelect from './infinite-select'
 import InfiniteSelectTags from './infinite-select-tags'
 import InfiniteSelectTagsOption from './infinite-select-tags-option'
+import InfiniteStep from './infinite-step'
+import InfiniteSteps from './infinite-steps'
 import InfiniteTable from './infinite-table'
 import InfiniteTableColumn from './infinite-table-column'
 import InfiniteThemePicker from './infinite-theme-picker'
@@ -19,13 +25,19 @@ const components = [
   InfiniteButton,
   InfiniteCascaders,
   InfiniteDialog,
+  InfiniteDownload,
   InfiniteForm,
   InfiniteLineChart,
   InfiniteNavMenu,
+  InfiniteOption,
   InfinitePagination,
   InfinitePieChart,
+  InfiniteResult,
+  InfiniteSelect,
   InfiniteSelectTags,
   InfiniteSelectTagsOption,
+  InfiniteStep,
+  InfiniteSteps,
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,
@@ -33,7 +45,11 @@ const components = [
 ]
 const install = Vue => {
   components.forEach(Component => {
-    Vue.use(Component)
+    if (Component.install && Component.name.toLocaleLowerCase().includes('infinite')) {
+      Vue.use(Component)
+    }else{
+      Vue.prototype[`$${Component.name}`] = Component
+    }
   })
 };  
 /* istanbul ignore if */
@@ -46,13 +62,19 @@ export {
   InfiniteButton,
   InfiniteCascaders,
   InfiniteDialog,
+  InfiniteDownload,
   InfiniteForm,
   InfiniteLineChart,
   InfiniteNavMenu,
+  InfiniteOption,
   InfinitePagination,
   InfinitePieChart,
+  InfiniteResult,
+  InfiniteSelect,
   InfiniteSelectTags,
   InfiniteSelectTagsOption,
+  InfiniteStep,
+  InfiniteSteps,
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,
@@ -64,13 +86,19 @@ export default {
   InfiniteButton,
   InfiniteCascaders,
   InfiniteDialog,
+  InfiniteDownload,
   InfiniteForm,
   InfiniteLineChart,
   InfiniteNavMenu,
+  InfiniteOption,
   InfinitePagination,
   InfinitePieChart,
+  InfiniteResult,
+  InfiniteSelect,
   InfiniteSelectTags,
   InfiniteSelectTagsOption,
+  InfiniteStep,
+  InfiniteSteps,
   InfiniteTable,
   InfiniteTableColumn,
   InfiniteThemePicker,

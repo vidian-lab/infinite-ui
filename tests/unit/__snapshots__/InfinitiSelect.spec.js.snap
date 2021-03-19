@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InfiniteSelect toMatchSnapshot 1`] = `
+<div class="el-select">
+  <!---->
+  <div class="el-input el-input--suffix">
+    <!----><input type="text" readonly="readonly" autocomplete="off" placeholder="请选择" class="el-input__inner">
+    <!----><span class="el-input__suffix"><span class="el-input__suffix-inner"><i class="el-select__caret el-input__icon el-icon-arrow-up"></i><!----><!----><!----><!----><!----></span>
+    <!----></span>
+    <!---->
+    <!---->
+  </div>
+  <transition-stub name="el-zoom-in-top">
+    <div class="el-select-dropdown el-popper" style="display: none;">
+      <div class="el-scrollbar" style="display: none;">
+        <div class="el-select-dropdown__wrap el-scrollbar__wrap el-scrollbar__wrap--hidden-default">
+          <ul class="el-scrollbar__view el-select-dropdown__list"></ul>
+        </div>
+        <div class="el-scrollbar__bar is-horizontal">
+          <div class="el-scrollbar__thumb" style="transform: translateX(0%); webkit-transform: translateX(0%);"></div>
+        </div>
+        <div class="el-scrollbar__bar is-vertical">
+          <div class="el-scrollbar__thumb" style="transform: translateY(0%); webkit-transform: translateY(0%);"></div>
+        </div>
+      </div>
+      <p class="el-select-dropdown__empty">
+        无数据
+      </p>
+    </div>
+  </transition-stub>
+</div>
+`;

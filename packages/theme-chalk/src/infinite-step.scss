@@ -1,75 +1,17 @@
 @import './common/var.scss';
 @import '../../../node_modules/element-ui/packages/theme-chalk/src/step.scss';
 
-.infinite-step{
-  &.--horizontal{
-    white-space: normal;
-  };
-  &.infinite-step-wait, &.infinite-step-finish {
-    opacity: 0.6;
-  };
-  &.infinite-step-process {
-    opacity: 1;
-  };
-};
-
-.infinite-step--horizontal {
-  white-space: normal;
-};
-
-.infinite-steps--horizontal {
-  white-space: normal;
-};
-
-.infinite-step__head {
-  display: flex;
-  align-items: center;
-  opacity: 0.8;
-  .infinite-step__line{
-    flex: 1;
-    height: 2px;
-    margin-right: 4px;
-  }
-  &.is-process{
-    .el-step__icon {
-      background-color: $--color-primary;
-      border-color: $--color-primary;
-      color: #fff;
-    };
-  };
-  &.is-finish,&.is-success {
+.infinite-step {
+  .is-process {
     color: $--color-primary;
-    .infinite-step__line {
-      background-color: $--color-primary !important;
+
+    .el-step__head,
+    &.el-step__title {
+      color: $--color-primary;
+    }
+
+    .el-step__icon.is-text {
       border-color: $--color-primary;
-    };
-    .el-step_icon_finish{
-      font-size: 24px;
-      >i {
-        color: $--color-primary;
-      };
     }
   }
-  &.is-process, &.is-finish {
-    opacity: 1;
-  };
 }
-.infinite-step-last__line {
-  display: none;
-}
-
-.infinite-step__main{
-  max-width: calc(9em + 30px);
-};
-
-.infinite-step__description {
-  margin-left: 29px;
-}
-
-.infinite-step_title {
-  display: inline-block;
-  margin:0 4px;
-  &.is-process {
-    font-weight: 600;
-  }
-};

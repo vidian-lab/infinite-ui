@@ -21,6 +21,7 @@ import Aside from 'element-ui/lib/aside'
 import Input from 'element-ui/lib/input'
 import Message from 'element-ui/lib/message'
 import Notification from 'element-ui/lib/notification'
+import Step from 'element-ui/lib/step'
 Vue.use(Col)
 Vue.use(Row)
 Vue.use(Container)
@@ -28,6 +29,7 @@ Vue.use(Header)
 Vue.use(Main)
 Vue.use(Aside)
 Vue.use(Input)
+Vue.use(Step)
 
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification

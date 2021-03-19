@@ -12,6 +12,8 @@ import SelectTags from '@/docs/SelectTags.md'
 import Table from '@/docs/Table.md'
 import ThemePicker from '@/docs/ThemePicker.md'
 import Tree from '@/docs/Tree.md'
+import Select from '@/docs/Select.md'
+import Steps from '@/docs/Steps.md'
 
 export {
   Installation,
@@ -26,5 +28,7 @@ export {
   SelectTags,
   Table,
   ThemePicker,
-  Tree
+  Tree,
+  Select,
+  Steps
 }

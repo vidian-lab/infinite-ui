@@ -42,7 +42,8 @@
           <!-- 节点操作按钮 -->
           <i v-for="(btn,index) in nodeOperationBtn"
              :key="index"
-             :class="btn.icon"
+             v-show="assignOperationBtnsProp[btn.id].beforeCreate(node)"
+             :class="assignOperationBtnsProp[btn.id].icon"
              @click.stop="btn.click(data, node)"></i>
         </div>
 
@@ -57,7 +58,7 @@
                       :disabled="item.disabled"
                       :size="editComponentSize"
                       :placeholder="item.placeholder"
-                      @input="validateInput(item)"></el-input>
+                      @input="validateInput(item,node)"></el-input>
             <div class="group_inputs-vilidate-error">
               {{item.validateFun && editInputMap[item.id].validateError}}
             </div>
@@ -98,6 +99,21 @@ export default {
   beforeCreate () {
     this.$message = ElMessage
   },
+  computed: {
+    // 操作节点按钮配置对象，提供显示，icon自定义
+    assignOperationBtnsProp () {
+      const prop = {}
+      this.nodeOperationBtn.forEach(btn => {
+        const defaultProp = {
+          beforeCreate: () => true,
+          icon: btn.icon
+        }
+        // 合并传入配置对象，存在即合并，否则取默认
+        prop[btn.id] = this.nodeOperationBtnsProp[btn.id] ? Object.assign(defaultProp, this.nodeOperationBtnsProp[btn.id]) : defaultProp
+      })
+      return prop
+    }
+  },
   data () {
     return {
       // 垃圾回收器
@@ -137,6 +153,7 @@ export default {
       nodeOperationBtn: [
         // 新增
         {
+          id: 'add',
           icon: 'el-icon-circle-plus-outline',
           click: (data, node) => {
             // 判断是否有正在编辑的节点
@@ -148,6 +165,7 @@ export default {
         },
         // 删除
         {
+          id: 'delete',
           icon: 'el-icon-remove-outline',
           click: (_, node) => {
             this.isInOperation(() => {
@@ -157,6 +175,7 @@ export default {
         },
         // 编辑
         {
+          id: 'edit',
           icon: 'el-icon-edit',
           click: (data, node) => {
             // 判断是否有正在编辑的节点

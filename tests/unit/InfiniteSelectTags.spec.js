@@ -6,7 +6,7 @@ import ElSelect from 'element-ui/lib/select'
 import ElOption from 'element-ui/lib/option'
 import ElCheckbox from 'element-ui/lib/checkbox'
 import InfiniteButton from '@/packages/infinite-button/src/index.vue'
-import InfiniteSelectTagsOption from '@/packages/infinite-select-tags/src/InfiniteSelectTagsOption.vue'
+import InfiniteSelectTagsOption from '@/packages/infinite-select-tags/src/infiniteSelectTagsOption.vue'
 const getTestData = function () {
   return [
     {
