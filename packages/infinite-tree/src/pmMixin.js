@@ -113,7 +113,7 @@ export default {
     addNotChildrenNodeAttr () {
       this.$nextTick(() => {
         const treeNodes = this.$refs.infiniteTreeRef.$el.querySelectorAll('.el-tree-node')
-        treeNodes.forEach(el => {
+        Array.from(treeNodes).forEach(el => {
           const cDom = el.querySelector('.el-tree-node__children')
           el.setAttribute('not-children', cDom === null || cDom.innerHTML === '')
         })
@@ -162,6 +162,7 @@ export default {
     addNode (data, node) {
       if (this.beforeAdd(node)) {
         // 初始化inputs
+
         this.editInputs.forEach(item => {
           const editInputMapItem = this.editInputMap[item.id]
           editInputMapItem.value = item.defaultValue || ''
@@ -169,6 +170,7 @@ export default {
         })
         const newData = { ...TreeCtrl.createNode() }
         // 添加动态属性
+
         this.editInputs.forEach(item => {
           newData[item.id] = ''
         })

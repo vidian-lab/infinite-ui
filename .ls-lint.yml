@@ -1,0 +1,14 @@
+ls:
+  '{packages}':
+      .dir: kebab-case | camelCase
+      .js: kebab-case | camelCase
+      .vue: camelCase
+      .ts: camelCase | camelCase
+
+
+ignore: 
+    - .git 
+    - packages/theme-chalk/node_modules
+    - node_modules
+    - tests
+    - build
