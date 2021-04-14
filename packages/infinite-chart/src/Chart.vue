@@ -1,6 +1,6 @@
 <template>
   <div class="chart">
-    <div ref='chart-con' :id="id"></div>
+    <div :id="id"></div>
     <slot></slot>
   </div>
 </template>
