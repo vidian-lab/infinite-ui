@@ -263,6 +263,7 @@
             type: 'input',
             key: 'password',
             isShow: true,
+            disabled: true,
             rules: [
               { required: true, validator: validatePass, trigger: 'blur' },
             ],

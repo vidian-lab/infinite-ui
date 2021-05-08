@@ -72,6 +72,14 @@ export default {
     beforeEdit: {
       type: Function,
       default: () => { return true }
+    },
+    maxLevel: {
+      type: Number,
+      default: 6
+    },
+    enabelCopy: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
@@ -196,6 +204,8 @@ export default {
     },
     // 新增根节点
     addRootNode () {
+      // 只有在编辑状态下才可以添加根节点
+      if (!this.isEditNode) { return }
       this.isInOperation(() => {
         this.addNode()
       })
@@ -310,6 +320,35 @@ export default {
         }
       }
       this.dustbin = null
+    },
+
+    // 暴露给外部调用的取消事件
+    cancelEditNode () {
+      if (!this.operationNode) { return }
+      const nodeData = this.operationNode.data
+      this.cancelNode(nodeData, this.operationNode)
+    },
+    getNodeText (editInputs, data) {
+      let nodeText = ''
+      editInputs.forEach((item, index) => {
+        if (index === 0) {
+          nodeText = data[item.id || this.props.label]
+        } else {
+          nodeText += index && data[item.id || this.props.label] ? `(${data[item.id || this.props.label]})` : ''
+        }
+      })
+      data.nodeText = nodeText
+      return nodeText
+    },
+    copyText (text) {
+      const tag = document.createElement('input')
+      tag.setAttribute('id', 'cp_input')
+      tag.value = text
+      document.getElementsByTagName('body')[0].appendChild(tag)
+      document.querySelector('#cp_input').select()
+      document.execCommand('copy')
+      document.querySelector('#cp_input').remove()
+      this.$emit('copyTextDone', text)
     }
   }
 }

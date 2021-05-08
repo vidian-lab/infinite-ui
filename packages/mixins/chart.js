@@ -1,13 +1,11 @@
 
-let chart = null
-// if (process.env.NODE_ENV === 'lib' || process.env.NODE_ENV === 'development') {
-const { Chart, registerEngine, registerGeometry, registerComponentController } = require('@antv/g2/lib/core')
-chart = Chart
+const { Chart, registerEngine, registerGeometry, registerComponentController, registerInteraction, registerAction } = require('@antv/g2/lib/core')
 const Line = require('@antv/g2/lib/geometry/line').default
 const Point = require('@antv/g2/lib/geometry/point').default
 const Interval = require('@antv/g2/lib/geometry/interval').default
 const Axis = require('@antv/g2/lib/chart/controller/axis').default
 const Tooltip = require('@antv/g2/lib/chart/controller/tooltip').default
+const TooltipAction = require('@antv/g2/lib/interaction/action/component/tooltip/geometry').default
 const Legend = require('@antv/g2/lib/chart/controller/legend').default
 const Coordinate = require('@antv/coord/lib/factory').default
 const G = require('@antv/g-canvas')
@@ -21,10 +19,20 @@ registerComponentController('axis', Axis)
 registerComponentController('tooltip', Tooltip)
 registerComponentController('legend', Legend)
 registerComponentController('coordinate', Coordinate)
-// } else {
-//   const G2 = require('@antv/g2')
-//   chart = G2.Chart
-// }
+
+registerAction('tooltip', TooltipAction)
+// 注册 tooltip 的 interaction
+registerInteraction('tooltip', {
+  start: [
+    { trigger: 'plot:mousemove', action: 'tooltip:show', throttle: { wait: 50, leading: true, trailing: false } },
+    { trigger: 'plot:touchmove', action: 'tooltip:show', throttle: { wait: 50, leading: true, trailing: false } }
+  ],
+  end: [
+    { trigger: 'plot:mouseleave', action: 'tooltip:hide' },
+    { trigger: 'plot:leave', action: 'tooltip:hide' },
+    { trigger: 'plot:touchend', action: 'tooltip:hide' }
+  ]
+})
 
 export default {
   computed: {
@@ -55,7 +63,7 @@ export default {
       if (dom && dom.innerHTML) {
         dom.innerHTML = ''
       }
-      return new chart({
+      return new Chart({
         container: this.id,
         width: dom.offsetWidth || 800,
         height: dom.offsetHeight || 500,

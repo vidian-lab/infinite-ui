@@ -32,6 +32,11 @@ export default {
   },
   render (h, context) {
     const { itemData, formModels } = this
+    const _data = {
+      props: {
+        ...itemData
+      }
+    }
     const placeholder = itemData.placeholder || ''
     formModels[itemData.key] = formModels[itemData.key] || itemData.defaultValue
     switch (itemData.type) {
@@ -51,15 +56,15 @@ export default {
         }
         return component
       case 'input':
-        return (<el-input placeholder={placeholder} class={itemData.class} v-model={formModels[itemData.key]} />)
+        return (<el-input {..._data} placeholder={placeholder} class={itemData.class} v-model={formModels[itemData.key]} />)
       case 'select':
-        return (<el-select placeholder={placeholder} class={itemData.class} clearable={itemData.clearable} v-model={formModels[itemData.key]}>
+        return (<el-select {..._data} placeholder={placeholder} class={itemData.class} clearable={itemData.clearable} v-model={formModels[itemData.key]}>
           {(itemData.options || []).map(o => (<el-option label={o.label} value={o.id} />))}
         </el-select>)
       case 'switch':
-        return (<el-switch v-model={formModels[itemData.key]}></el-switch>)
+        return (<el-switch {..._data} v-model={formModels[itemData.key]}></el-switch>)
       case 'textarea':
-        return (<el-input type="textarea" placeholder={placeholder} class={itemData.class} v-model={formModels[itemData.key]} />)
+        return (<el-input {..._data} type="textarea" placeholder={placeholder} class={itemData.class} v-model={formModels[itemData.key]} />)
       // case 'radio':
       //   return (<el-radio placeholder={placeholder} class={itemData.class} v-model={formModels[itemData.key]} />)
       case 'date-picker':
