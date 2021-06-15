@@ -22,6 +22,7 @@ import InfiniteTableColumn from './infinite-table-column'
 import InfiniteThemePicker from './infinite-theme-picker'
 import InfiniteTree from './infinite-tree'
 import InfiniteFormSearch from './infinite-form-search'
+import InfiniteVirtualTree from './infinite-virtual-tree'
 const version = '1.0.10'
 const components = [
   InfiniteButton,
@@ -84,7 +85,8 @@ export {
   InfiniteTableColumn,
   InfiniteThemePicker,
   InfiniteTree,
-  InfiniteFormSearch
+  InfiniteFormSearch,
+  InfiniteVirtualTree
 }
 export default {
   install,
@@ -110,6 +112,6 @@ export default {
   InfiniteTableColumn,
   InfiniteThemePicker,
   InfiniteTree,
-  InfiniteFormSearch
+  InfiniteFormSearch,
+  InfiniteVirtualTree
 }
-  

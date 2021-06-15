@@ -1,4 +1,3 @@
-
 import Installation from '@/docs/Installation.md'
 import Button from '@/docs/Button.md'
 import Cascaders from '@/docs/Cascaders.md'
@@ -15,6 +14,7 @@ import Tree from '@/docs/Tree.md'
 import Select from '@/docs/Select.md'
 import Steps from '@/docs/Steps.md'
 import FromSearch from '@/docs/FromSearch.md'
+import VirtualTree from '@/docs/VirtualTree.md'
 
 export {
   Installation,
@@ -32,5 +32,6 @@ export {
   Tree,
   Select,
   Steps,
-  FromSearch
+  FromSearch,
+  VirtualTree
 }
