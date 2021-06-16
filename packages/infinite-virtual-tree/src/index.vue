@@ -27,7 +27,6 @@
         />
         <span v-else style="margin-right: 5px"></span>
         <slot :item="item" :index="index"></slot>
-        <img :src="bgImg" style="width: 200px;"/>
       </div>
     </div>
   </div>
@@ -35,7 +34,6 @@
 
 <script>
 let lastTime = 0;
-import bgImg from "./25403-102.jpg";
 export default {
   name: "InfiniteVirtualTree",
   props: {
@@ -52,7 +50,7 @@ export default {
       type: Number,
       default: 30,
     },
-    option: {
+    option: { 
       // 配置对象
       type: Object,
       default: () => ({
@@ -66,7 +64,6 @@ export default {
       offset: 0, // translateY偏移量
       contentHeight: "0px",
       visibleData: [],
-      bgImg,
     };
   },
   computed: {
@@ -139,8 +136,9 @@ export default {
         Math.floor(this.visibleCount / 2);
       start = start < 0 ? 0 : start;
       const end = start + this.visibleCount * 2;
-
-      this.visibleData = (this.flattenTree || []).slice(start, end)
+      const allVisibleData = (this.flattenTree || [])
+        .filter((item) => item.visible);
+      this.visibleData = allVisibleData.slice(start, end);
       this.offset = start * this.option.itemHeight;
     },
     getContentHeight() {
@@ -151,6 +149,7 @@ export default {
     },
 
     toggleExpand(item) {
+      // 点击支持异步加载
       const isExpand = item.expand;
       if (isExpand) {
         this.collapse(item, true); // 折叠
