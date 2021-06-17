@@ -23,7 +23,7 @@
           :class="item.expand ? 'vir-tree__expand' : 'vir-tree__close'"
           class="el-icon-caret-right"
           @click="toggleExpand(item)"
-          v-if="item.children && item.children.length"
+          v-if="(item.children && item.children.length) || lazy"
         />
         <span v-else style="margin-right: 5px"></span>
         <slot :item="item" :index="index"></slot>
@@ -50,7 +50,7 @@ export default {
       type: Number,
       default: 30,
     },
-    option: { 
+    option: {
       // 配置对象
       type: Object,
       default: () => ({
@@ -58,63 +58,31 @@ export default {
         itemHeight: 25, // 单个item的高度
       }),
     },
+    lazy: {
+      // 是否懒加载
+      type: Boolean,
+      default: false,
+    },
+    load: {
+      type: [Function, undefined],
+      default: undefined,
+    },
   },
   data() {
     return {
       offset: 0, // translateY偏移量
       contentHeight: "0px",
       visibleData: [],
+      allNodeData: [],
     };
   },
   computed: {
-    flattenTree() {
-      const flatten = function (
-        list,
-        childKey = "children",
-        level = 1,
-        parent = null,
-        defaultExpand = true
-      ) {
-        let arr = [];
-        list.forEach((item) => {
-          item.level = level;
-          if (item.expand === undefined) {
-            item.expand = defaultExpand;
-          }
-          if (item.visible === undefined) {
-            item.visible = true;
-          }
-          if (!parent.visible || !parent.expand) {
-            item.visible = false;
-          }
-          item.parent = parent;
-          arr.push(item);
-          if (item[childKey]) {
-            arr.push(
-              ...flatten(
-                item[childKey],
-                childKey,
-                level + 1,
-                item,
-                defaultExpand
-              )
-            );
-          }
-        });
-        return arr;
-      };
-      return flatten(this.treeData, "children", 1, {
-        level: 0,
-        visible: true,
-        expand: true,
-        children: this.treeData,
-      });
-    },
     visibleCount() {
       return Math.floor(this.option.height / this.option.itemHeight);
     },
   },
   mounted() {
+    this.flattenTree()
     this.updateView();
   },
   methods: {
@@ -136,20 +104,56 @@ export default {
         Math.floor(this.visibleCount / 2);
       start = start < 0 ? 0 : start;
       const end = start + this.visibleCount * 2;
-      const allVisibleData = (this.flattenTree || [])
-        .filter((item) => item.visible);
+      const allVisibleData = (this.allNodeData || []).filter(
+        (item) => item.visible
+      );
+
       this.visibleData = allVisibleData.slice(start, end);
       this.offset = start * this.option.itemHeight;
     },
     getContentHeight() {
       this.contentHeight =
-        (this.flattenTree || []).filter((item) => item.visible).length *
+        (this.allNodeData || []).filter((item) => item.visible).length *
           this.option.itemHeight +
         "px";
     },
 
     toggleExpand(item) {
       // 点击支持异步加载
+      if (this.lazy && this.load) {
+        const loadFn = this.load;
+        loadFn(item, (data) => {
+          // 挂载子节点
+          const nodeIndex =
+            this.allNodeData.findIndex((t) => t.id === item.id) + 1;
+
+          data.forEach((child, index) => {
+            child.level = item.level + 1;
+            child.visible = true;
+            child.expand = false;
+            child.parent = {
+              id: item.id,
+              label: item.label,
+              level: item.level,
+            };
+            item.children.unshift(child);
+            this.allNodeData.splice(nodeIndex + index, 0, child);
+          });
+          this.expandStateChange(item);
+
+          // data.forEach((d) => {
+          //   d.visible = true;
+          // });
+          // item.children = data;
+          // debugger;
+          // this.updateView();
+        });
+      } else {
+        this.expandStateChange(item);
+      }
+    },
+
+    expandStateChange(item) {
       const isExpand = item.expand;
       if (isExpand) {
         this.collapse(item, true); // 折叠
@@ -198,6 +202,57 @@ export default {
         if (node.children) {
           this.recursionVisible(node.children, status);
         }
+      });
+    },
+    flattenTree() {
+      const that = this;
+      const flatten = function (
+        list,
+        childKey = "children",
+        level = 1,
+        parent = null,
+        defaultExpand = that.defaultExpand
+      ) {
+        let arr = [];
+        list.forEach((item) => {
+          item.level = level;
+          if (item.expand === undefined) {
+            item.expand = defaultExpand;
+          }
+          if (item.visible === undefined) {
+            item.visible = true;
+          }
+          if (!parent.visible || !parent.expand) {
+            item.visible = false;
+          }
+          item.parent = {
+            id: parent.id,
+            expand: parent.expand,
+            label: parent.label,
+            level: parent.level,
+            visible: parent.visible,
+          };
+          arr.push(item);
+          if (item[childKey]) {
+            arr.push(
+              ...flatten(
+                item[childKey],
+                childKey,
+                level + 1,
+                item,
+                defaultExpand
+              )
+            );
+          }
+        });
+        that.allNodeData = arr;
+        return arr;
+      };
+      return flatten(this.treeData, "children", 1, {
+        level: 0,
+        visible: true,
+        expand: true,
+        children: this.treeData,
       });
     },
   },

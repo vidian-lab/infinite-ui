@@ -9,7 +9,7 @@
 ```html
 <template>
     <div class="main">
-        <infinite-virtual-tree ref="virtualTree" :treeData="treeData" :defaultExpand="true" :option="option">
+        <infinite-virtual-tree ref="virtualTree" :treeData="treeData" :option="option" :lazy="true" :load="loadChildNode">
             <template v-slot="{ item, index }">
                 <div>{{ item.label }}</div>
             </template>
@@ -18,14 +18,13 @@
 </template>
 
 <script>
-    const maxNode = 100000; //最大的节点数
-    const childNodesNumber = [2, 5]; //子节点数
-    const maxLevel = 3; //最大嵌套层级
-    const childRate = 0.4; //拥有子节点的概率
+    // const maxNode = 10000; //最大的节点数
+    const childNodesNumber = [0, 0]; //子节点数
+    const maxLevel = 6; //最大嵌套层级
+    const childRate = 0; //拥有子节点的概率
     const label = "节点"; //节点label
 
     let index = 0;
-    let data = [];
 
     const randomInteger = function(min, max) {
         let result = min - 0.5 + Math.random() * (max - min + 1);
@@ -48,7 +47,7 @@
             label: `${label}_${id}`
         };
     };
-    const generateChild = function(tree, level = 1) {
+    const generateChild = function(tree, level = 1, maxNode) {
         if (index > maxNode - 1) return;
         tree.children = [];
         const childNumber = randomInteger(childNodesNumber[0], childNodesNumber[1]);
@@ -62,7 +61,8 @@
             tree.children.push(obj);
         }
     };
-    const generateData = function() {
+    const generateData = function(maxNode) {
+        let data = [];
         for (let index = 0; index < maxNode; index++) {
             let obj = generateNode();
             index < maxNode && generateChild(obj);
@@ -81,7 +81,7 @@
         },
         computed: {
             treeData() {
-                return generateData();
+                return generateData(10000);
             },
         },
         methods: {
@@ -90,6 +90,11 @@
             },
             expandAll() {
                 this.$refs.virtualTree.expandAll();
+            },
+            loadChildNode(node, resolve) {
+                // 异步加载子节点
+                const child = generateData(5)
+                resolve(child)
             }
         }
     }
