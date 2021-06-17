@@ -1,26 +1,26 @@
 <template>
   <div
-    class="vir-tree"
+    class="infinite-virtual-tree"
     ref="scroller"
     :style="{ height: option.height + 'px' }"
     @scroll="handleScroll"
   >
-    <div class="vir-tree__phantom" :style="{ height: contentHeight }"></div>
+    <div class="infinite-virtual-tree__phantom" :style="{ height: contentHeight }"></div>
     <div
-      class="vir-tree__content"
+      class="infinite-virtual-tree__content"
       :style="{ transform: `translateY(${offset}px)` }"
     >
       <div
         v-for="(item, index) in visibleData"
         :key="item.id"
-        class="vir-tree__list-view"
+        class="infinite-virtual-tree__list-view"
         :style="{
           paddingLeft: 18 * (item.level - 1) + 'px',
           height: option.itemHeight + 'px',
         }"
       >
         <i
-          :class="item.expand ? 'vir-tree__expand' : 'vir-tree__close'"
+          :class="item.expand ? 'infinite-virtual-tree__expand' : 'infinite-virtual-tree__close'"
           class="el-icon-caret-right"
           @click="toggleExpand(item)"
           v-if="(item.children && item.children.length) || lazy"
@@ -258,54 +258,3 @@ export default {
   }
 }
 </script>
-
-<style lang='scss' scoped>
-.vir-tree {
-  position: relative;
-  overflow-y: scroll;
-  &__phantom {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    z-index: -1;
-  }
-
-  &__content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    min-height: 100px;
-  }
-
-  &__list-view {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  &__content__item {
-    padding: 5px;
-    box-sizing: border-box;
-
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    align-items: center;
-    cursor: pointer;
-  }
-  &__content__item:hover,
-  &__content__item__selected {
-    background-color: #d7d7d7;
-  }
-  &__content__item__icon {
-    position: absolute;
-    left: 0;
-    color: #c0c4cc;
-    z-index: 10;
-  }
-  &__expand {
-    transform: rotate(90deg);
-  }
-}
-</style>

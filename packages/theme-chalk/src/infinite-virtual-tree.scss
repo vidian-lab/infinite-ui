@@ -1,1 +1,49 @@
 @import './common/var.scss';
+.infinite-virtual-tree {
+    position: relative;
+    overflow-y: scroll;
+    &__phantom {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      z-index: -1;
+    }
+  
+    &__content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      min-height: 100px;
+    }
+  
+    &__list-view {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    &__content__item {
+      padding: 5px;
+      box-sizing: border-box;
+  
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      align-items: center;
+      cursor: pointer;
+    }
+    &__content__item:hover,
+    &__content__item__selected {
+      background-color: #d7d7d7;
+    }
+    &__content__item__icon {
+      position: absolute;
+      left: 0;
+      color: #c0c4cc;
+      z-index: 10;
+    }
+    &__expand {
+      transform: rotate(90deg);
+    }
+  }
