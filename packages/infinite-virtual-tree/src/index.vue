@@ -33,113 +33,113 @@
 </template>
 
 <script>
-let lastTime = 0;
+let lastTime = 0
 export default {
-  name: "InfiniteVirtualTree",
+  name: 'InfiniteVirtualTree',
   props: {
     treeData: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     defaultExpand: {
       type: Boolean,
-      default: false,
+      default: false
     },
     timeout: {
-      //刷新频率
+      // 刷新频率
       type: Number,
-      default: 30,
+      default: 10
     },
     option: {
       // 配置对象
       type: Object,
       default: () => ({
-        height: 500, //滚动容器的高度
-        itemHeight: 25, // 单个item的高度
-      }),
+        height: 500, // 滚动容器的高度
+        itemHeight: 25 // 单个item的高度
+      })
     },
     lazy: {
       // 是否懒加载
       type: Boolean,
-      default: false,
+      default: false
     },
     load: {
       type: [Function, undefined],
-      default: undefined,
-    },
+      default: undefined
+    }
   },
-  data() {
+  data () {
     return {
       offset: 0, // translateY偏移量
-      contentHeight: "0px",
+      contentHeight: '0px',
       visibleData: [],
-      allNodeData: [],
-    };
+      allNodeData: []
+    }
   },
   computed: {
-    visibleCount() {
-      return Math.floor(this.option.height / this.option.itemHeight);
-    },
+    visibleCount () {
+      return Math.floor(this.option.height / this.option.itemHeight)
+    }
   },
-  mounted() {
+  mounted () {
     this.flattenTree()
-    this.updateView();
+    this.updateView()
   },
   methods: {
-    handleScroll() {
-      let currentTime = +new Date();
+    handleScroll () {
+      let currentTime = +new Date()
       if (currentTime - lastTime > this.timeout) {
-        this.updateVisibleData(this.$refs.scroller.scrollTop);
-        lastTime = currentTime;
+        this.updateVisibleData(this.$refs.scroller.scrollTop)
+        lastTime = currentTime
       }
     },
-    updateView() {
-      this.getContentHeight();
-      this.$emit("update", this.treeData);
-      this.handleScroll();
+    updateView () {
+      this.getContentHeight()
+      this.$emit('update', this.treeData)
+      this.handleScroll()
     },
-    updateVisibleData(scrollTop = 0) {
+    updateVisibleData (scrollTop = 0) {
       let start =
         Math.floor(scrollTop / this.option.itemHeight) -
-        Math.floor(this.visibleCount / 2);
-      start = start < 0 ? 0 : start;
-      const end = start + this.visibleCount * 2;
+        Math.floor(this.visibleCount / 2)
+      start = start < 0 ? 0 : start
+      const end = start + this.visibleCount * 2
       const allVisibleData = (this.allNodeData || []).filter(
         (item) => item.visible
-      );
+      )
 
-      this.visibleData = allVisibleData.slice(start, end);
-      this.offset = start * this.option.itemHeight;
+      this.visibleData = allVisibleData.slice(start, end)
+      this.offset = start * this.option.itemHeight
     },
-    getContentHeight() {
+    getContentHeight () {
       this.contentHeight =
         (this.allNodeData || []).filter((item) => item.visible).length *
           this.option.itemHeight +
-        "px";
+        'px'
     },
 
-    toggleExpand(item) {
+    toggleExpand (item) {
       // 点击支持异步加载
       if (this.lazy && this.load) {
-        const loadFn = this.load;
+        const loadFn = this.load
         loadFn(item, (data) => {
           // 挂载子节点
           const nodeIndex =
-            this.allNodeData.findIndex((t) => t.id === item.id) + 1;
+            this.allNodeData.findIndex((t) => t.id === item.id) + 1
 
           data.forEach((child, index) => {
-            child.level = item.level + 1;
-            child.visible = true;
-            child.expand = false;
+            child.level = item.level + 1
+            child.visible = true
+            child.expand = false
             child.parent = {
               id: item.id,
               label: item.label,
-              level: item.level,
-            };
-            item.children.unshift(child);
-            this.allNodeData.splice(nodeIndex + index, 0, child);
-          });
-          this.expandStateChange(item);
+              level: item.level
+            }
+            item.children.unshift(child)
+            this.allNodeData.splice(nodeIndex + index, 0, child)
+          })
+          this.expandStateChange(item)
 
           // data.forEach((d) => {
           //   d.visible = true;
@@ -147,92 +147,92 @@ export default {
           // item.children = data;
           // debugger;
           // this.updateView();
-        });
+        })
       } else {
-        this.expandStateChange(item);
+        this.expandStateChange(item)
       }
     },
 
-    expandStateChange(item) {
-      const isExpand = item.expand;
+    expandStateChange (item) {
+      const isExpand = item.expand
       if (isExpand) {
-        this.collapse(item, true); // 折叠
+        this.collapse(item, true) // 折叠
       } else {
-        this.expand(item, true); // 展开
+        this.expand(item, true) // 展开
       }
-      this.updateView();
+      this.updateView()
     },
 
-    //展开节点
-    expand(item) {
-      item.expand = true;
-      this.recursionVisible(item.children, true);
+    // 展开节点
+    expand (item) {
+      item.expand = true
+      this.recursionVisible(item.children, true)
     },
-    //折叠节点
-    collapse(item) {
-      item.expand = false;
-      this.recursionVisible(item.children, false);
+    // 折叠节点
+    collapse (item) {
+      item.expand = false
+      this.recursionVisible(item.children, false)
     },
 
-    //折叠所有
-    collapseAll(level = 1) {
+    // 折叠所有
+    collapseAll (level = 1) {
       this.flattenTree.forEach((item) => {
-        item.expand = false;
-        if (item.level != level) {
-          item.visible = false;
+        item.expand = false
+        if (item.level !== level) {
+          item.visible = false
         }
-      });
-      this.updateView();
+      })
+      this.updateView()
     },
 
-    //展开所有
-    expandAll() {
+    // 展开所有
+    expandAll () {
       this.flattenTree.forEach((item) => {
-        item.expand = true;
-        item.visible = true;
-      });
+        item.expand = true
+        item.visible = true
+      })
 
-      this.updateView();
+      this.updateView()
     },
 
-    //递归节点
-    recursionVisible(children, status) {
+    // 递归节点
+    recursionVisible (children, status) {
       children.forEach((node) => {
-        node.visible = status;
+        node.visible = status
         if (node.children) {
-          this.recursionVisible(node.children, status);
+          this.recursionVisible(node.children, status)
         }
-      });
+      })
     },
-    flattenTree() {
-      const that = this;
+    flattenTree () {
+      const that = this
       const flatten = function (
         list,
-        childKey = "children",
+        childKey = 'children',
         level = 1,
         parent = null,
         defaultExpand = that.defaultExpand
       ) {
-        let arr = [];
+        let arr = []
         list.forEach((item) => {
-          item.level = level;
+          item.level = level
           if (item.expand === undefined) {
-            item.expand = defaultExpand;
+            item.expand = defaultExpand
           }
           if (item.visible === undefined) {
-            item.visible = true;
+            item.visible = true
           }
           if (!parent.visible || !parent.expand) {
-            item.visible = false;
+            item.visible = false
           }
           item.parent = {
             id: parent.id,
             expand: parent.expand,
             label: parent.label,
             level: parent.level,
-            visible: parent.visible,
-          };
-          arr.push(item);
+            visible: parent.visible
+          }
+          arr.push(item)
           if (item[childKey]) {
             arr.push(
               ...flatten(
@@ -242,21 +242,21 @@ export default {
                 item,
                 defaultExpand
               )
-            );
+            )
           }
-        });
-        that.allNodeData = arr;
-        return arr;
-      };
-      return flatten(this.treeData, "children", 1, {
+        })
+        that.allNodeData = arr
+        return arr
+      }
+      return flatten(this.treeData, 'children', 1, {
         level: 0,
         visible: true,
         expand: true,
-        children: this.treeData,
-      });
-    },
-  },
-};
+        children: this.treeData
+      })
+    }
+  }
+}
 </script>
 
 <style lang='scss' scoped>
