@@ -6,6 +6,7 @@ import InfiniteDialog from './infinite-dialog'
 import InfiniteDownload from './infinite-download'
 import InfiniteDragContainer from './infinite-drag-container'
 import InfiniteForm from './infinite-form'
+import InfiniteFormSearch from './infinite-form-search'
 import InfiniteLineChart from './infinite-line-chart'
 import InfiniteNavMenu from './infinite-nav-menu'
 import InfiniteOption from './infinite-option'
@@ -21,10 +22,8 @@ import InfiniteTable from './infinite-table'
 import InfiniteTableColumn from './infinite-table-column'
 import InfiniteThemePicker from './infinite-theme-picker'
 import InfiniteTree from './infinite-tree'
-import InfiniteFormSearch from './infinite-form-search'
 import InfiniteVirtualTree from './infinite-virtual-tree'
-import InfiniteToolTips from './infinite-tooltips'
-const version = '1.0.10'
+const version = '1.0.11-alpha'
 const components = [
   InfiniteButton,
   InfiniteCascaders,
@@ -32,6 +31,7 @@ const components = [
   InfiniteDownload,
   InfiniteDragContainer,
   InfiniteForm,
+  InfiniteFormSearch,
   InfiniteLineChart,
   InfiniteNavMenu,
   InfiniteOption,
@@ -73,6 +73,7 @@ export {
   InfiniteDownload,
   InfiniteDragContainer,
   InfiniteForm,
+  InfiniteFormSearch,
   InfiniteLineChart,
   InfiniteNavMenu,
   InfiniteOption,
@@ -101,6 +102,7 @@ export default {
   InfiniteDownload,
   InfiniteDragContainer,
   InfiniteForm,
+  InfiniteFormSearch,
   InfiniteLineChart,
   InfiniteNavMenu,
   InfiniteOption,
