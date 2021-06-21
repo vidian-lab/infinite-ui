@@ -23,6 +23,7 @@ import InfiniteTableColumn from './infinite-table-column'
 import InfiniteThemePicker from './infinite-theme-picker'
 import InfiniteTree from './infinite-tree'
 import InfiniteVirtualTree from './infinite-virtual-tree'
+import InfiniteToolTips from './infinite-tooltips'
 const version = '1.0.11-alpha'
 const components = [
   InfiniteButton,
@@ -89,7 +90,6 @@ export {
   InfiniteTableColumn,
   InfiniteThemePicker,
   InfiniteTree,
-  InfiniteFormSearch,
   InfiniteVirtualTree,
   InfiniteToolTips
 }

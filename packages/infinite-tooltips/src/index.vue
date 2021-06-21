@@ -7,6 +7,7 @@
     :open-delay="openDelay"
     :disabled="getToolTipsDisabled"
     :popper-class="popperClass"
+    v-bind="options"
   >
     <span
       class="infinite-tooltips"
@@ -68,6 +69,10 @@ export default {
     showTips: {
       type: Boolean,
       default: false,
+    },
+    options: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
