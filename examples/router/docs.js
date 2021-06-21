@@ -15,6 +15,7 @@ import Select from '@/docs/Select.md'
 import Steps from '@/docs/Steps.md'
 import FromSearch from '@/docs/FromSearch.md'
 import VirtualTree from '@/docs/VirtualTree.md'
+import Tooltips from '@/docs/Tooltips.md'
 
 export {
   Installation,
@@ -33,5 +34,6 @@ export {
   Select,
   Steps,
   FromSearch,
-  VirtualTree
+  VirtualTree,
+  Tooltips
 }

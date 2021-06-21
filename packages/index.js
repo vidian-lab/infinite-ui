@@ -23,6 +23,7 @@ import InfiniteThemePicker from './infinite-theme-picker'
 import InfiniteTree from './infinite-tree'
 import InfiniteFormSearch from './infinite-form-search'
 import InfiniteVirtualTree from './infinite-virtual-tree'
+import InfiniteToolTips from './infinite-tooltips'
 const version = '1.0.10'
 const components = [
   InfiniteButton,
@@ -46,7 +47,9 @@ const components = [
   InfiniteTableColumn,
   InfiniteThemePicker,
   InfiniteTree,
-  InfiniteFormSearch
+  InfiniteFormSearch,
+  InfiniteVirtualTree,
+  InfiniteToolTips
 ]
 const install = Vue => {
   components.forEach(Component => {
@@ -86,7 +89,8 @@ export {
   InfiniteThemePicker,
   InfiniteTree,
   InfiniteFormSearch,
-  InfiniteVirtualTree
+  InfiniteVirtualTree,
+  InfiniteToolTips
 }
 export default {
   install,
@@ -113,5 +117,6 @@ export default {
   InfiniteThemePicker,
   InfiniteTree,
   InfiniteFormSearch,
-  InfiniteVirtualTree
+  InfiniteVirtualTree,
+  InfiniteToolTips
 }
