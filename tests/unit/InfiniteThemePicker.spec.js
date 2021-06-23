@@ -16,7 +16,7 @@ describe('InfiniteThemePicker.vue', () => {
     const chalk = await mockGetCSSString(url)
     expect(chalk === '').toBe(false)
     // 模拟替换主题方法
-    const mockGetThemeCluster = jest.fn(wrapper.vm.getThemeCluster)
+    const mockGetThemeCluster = jest.fn(wrapper.vm.getThemeCluster, 10000)
     const mockUpdateStyle = jest.fn(wrapper.vm.updateStyle)
     // 获取新旧主题色
     const themeCluster = mockGetThemeCluster(defaultVmodel.replace('#', ''))

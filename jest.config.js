@@ -5,7 +5,16 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1'
   },
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/packages/mixins/',
+    '<rootDir>/packages/utils/',
+    '<rootDir>/packages/theme-chalk/'
+  ],
   collectCoverage: true,
+  collectCoverageFrom: [
+    '<rootDir>/packages/infinite-*/src/'
+  ],
   // coverageThreshold: {
   //   global: {
   //     branches: 80,
