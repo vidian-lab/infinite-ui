@@ -9,7 +9,7 @@
 ```html
 <template>
     <div class="main">
-        <infinite-virtual-tree ref="virtualTree" :treeData="treeData" :option="option" :lazy="true" :load="loadChildNode">
+        <infinite-virtual-tree ref="virtualTree" :option="option" :treeOptions="treeOptions">
             <template v-slot="{ item, index }">
                 <div>{{ item.label }}</div>
             </template>
@@ -75,8 +75,21 @@
             return {
                 option: {
                     height: 200, //滚动容器的高度
-                    itemHeight: 25 // 单个item的高度
-                }
+                    itemHeight: 32 // 单个item的高度
+                },
+                treeOptions: [{
+                    lazy: true,
+                    loadFn: async (node, resolve) => {
+                        let treeData = []
+                        if (node.level === 0) {
+                            treeData = generateData(10000)
+                        } else {
+                            // 获取子节点
+                            treeData = generateData(5)
+                        }
+                        return resolve(treeData)
+                    }
+                }]
             };
         },
         computed: {
@@ -90,11 +103,6 @@
             },
             expandAll() {
                 this.$refs.virtualTree.expandAll();
-            },
-            loadChildNode(node, resolve) {
-                // 异步加载子节点
-                const child = generateData(5)
-                resolve(child)
             }
         }
     }
