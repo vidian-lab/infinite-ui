@@ -35,7 +35,6 @@ describe('InfiniteButton.vue', () => {
         icon: slotIcon
       }
     })
-    console.log(wrapper.html())
     const elStatus = wrapper.find('.infinite-result-status')
     expect(elStatus.text()).toBe(slotIcon)
   })

@@ -1,40 +1,40 @@
 <script>
-import ElTooltip from "element-ui/lib/tooltip";
+import ElTooltip from 'element-ui/lib/tooltip'
 
 export default {
-  name: "InfiniteOperation",
+  name: 'InfiniteOperation',
   components: { ElTooltip },
   props: {
     icon: {
       type: String,
-      default: "",
+      default: ''
     },
     text: {
       type: String,
-      default: "",
+      default: ''
     },
     callBack: {
       type: Function,
-      default: () => {},
+      default: () => {}
     },
     bindData: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     tips: {
       type: String,
-      default: "",
+      default: ''
     },
     placement: {
       type: String,
-      default: "top",
-    },
+      default: 'top'
+    }
   },
 
-  render(h) {
-    const { icon, text, callBack, bindData, placement, tips } = this;
-    const enterable = false;
-    const vnodes = [];
+  render (h) {
+    const { icon, text, callBack, bindData, placement, tips } = this
+    const enterable = false
+    const vnodes = []
     if (icon) {
       return (
         <el-tooltip
@@ -47,28 +47,28 @@ export default {
         >
           <span
             onClick={(e) => {
-              typeof callBack === "function" && callBack(bindData);
+              typeof callBack === 'function' && callBack(bindData)
             }}
           >
             <i class={icon}></i>
           </span>
         </el-tooltip>
-      );
+      )
     }
     if (text) {
       vnodes.push(
         <span
           slot="title"
           onClick={(e) => {
-            typeof callBack === "function" && callBack(bindData);
+            typeof callBack === 'function' && callBack(bindData)
           }}
           class={tips}
         >
           {text}
         </span>
-      );
+      )
     }
-    return vnodes;
-  },
-};
+    return vnodes
+  }
+}
 </script>
