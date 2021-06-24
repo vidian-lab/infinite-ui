@@ -1,4 +1,5 @@
 
+import { uuidv4 } from 'infinite-ui/packages/utils/index'
 const { Chart, registerEngine, registerGeometry, registerComponentController, registerInteraction, registerAction } = require('@antv/g2/lib/core')
 const Line = require('@antv/g2/lib/geometry/line').default
 const Point = require('@antv/g2/lib/geometry/point').default
@@ -9,6 +10,7 @@ const TooltipAction = require('@antv/g2/lib/interaction/action/component/tooltip
 const Legend = require('@antv/g2/lib/chart/controller/legend').default
 const Coordinate = require('@antv/coord/lib/factory').default
 const G = require('@antv/g-canvas')
+
 // 按需注入
 registerEngine('canvas', G)
 registerGeometry('line', Line)
@@ -37,7 +39,7 @@ registerInteraction('tooltip', {
 export default {
   computed: {
     id: function () {
-      return this.uuidv4()
+      return uuidv4()
     }
   },
   data () {
@@ -66,8 +68,8 @@ export default {
       return new Chart({
         container: this.id,
         width: dom.offsetWidth || 800,
-        height: dom.offsetHeight || 500,
-        // padding: this.padding || ['auto', 'auto'],
+        height: dom.innerHeight || 500,
+        padding: this.padding,
         renderer: 'canvas'
       })
     },

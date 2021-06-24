@@ -4,18 +4,19 @@
 
 <script>
 import mixinChart from 'infinite-ui/packages/mixins/chart'
-import { percentFormat, floatIntFormat, uuidv4 } from 'infinite-ui/packages/utils/index'
+import { percentFormat, floatIntFormat } from 'infinite-ui/packages/utils/index'
 
 export default {
   name: 'InfiniteLineChart',
   data () {
     return {
-      uuidv4
+     
     }
   },
   mixins: [mixinChart],
   props: {
     // 数据
+    
     data: {
       type: Array,
       default: () => []
@@ -51,6 +52,10 @@ export default {
       type: Boolean,
       default: true
     },
+    legendConfig: {
+      type: Object,
+      default: () => {}
+    },
     // 是否显示点
     showPoint: {
       type: Boolean,
@@ -75,11 +80,15 @@ export default {
       type: Boolean,
       default: true
     },
+    tooltipCfg: {
+      type: Object,
+      default: () => ({})
+    },
     // 内边距
     padding: {
       type: Array,
       default: function () {
-        return ['auto', 'auto']
+        return [42, 20, 80, 50]
       }
     }
   },
@@ -89,11 +98,11 @@ export default {
       // this.chart.source(data)
       this.chart.data(data)
       // this.chart.render()
-
       // 进行列定义
       let _this = this
       let scaleConfig = (function () {
         let obj = {}
+       
         for (const key in _this.axisName) {
           if (_this.axisName.hasOwnProperty(key)) {
             obj[key] = {}
@@ -104,27 +113,31 @@ export default {
             }
           }
         }
+        obj.value = {
+          min: 0,
+          nice: true
+          // max: 1000,
+          // tickCount: 6
+        }
         return obj
       }())
+      console.log('scaleConfig', scaleConfig)
       this.chart.scale(scaleConfig)
 
       // 是否使用tooltip
       if (this.useTooltip) {
         // 配置图表tooltip
-        this.chart.tooltip(true, {
-          crosshairs: {
-            type: 'line'
-          }
-        })
+        this.chart.tooltip(_this.tooltipCfg)
       } else {
         this.chart.tooltip(false)
       }
 
       // 配置图表图例
       if (this.showLegend) {
-        this.chart.legend('type', {
+        this.chart.legend('type', { ...{
           position: 'bottom-center'
-        })
+        },
+        ...this.legendConfig })
       } else {
         this.chart.legend('type', false)
       }
@@ -134,6 +147,11 @@ export default {
         tickLine: false
       })
       this.chart.axis('value', {
+        line: {
+          lineWidth: 1, // 设置线的宽度
+          stroke: '#d9d9d9', // 设置线的颜色
+          lineDash: [1, 1]// 设置虚线
+        },
         grid: {
           lineStyle: {
             lineDash: null,
@@ -147,14 +165,12 @@ export default {
           formatter: (text, item, index) => {
             return text + ''
           }
-        },
-        tickLine: false
+        }
       })
 
       // 配置折线和散点的颜色、形状等
       let line = this.chart.line().position('name*value')
       let point
-
       if (this.showPoint) {
         point = this.chart.point().position('name*value').size(4).shape('circle').style({
           stroke: '#fff',
