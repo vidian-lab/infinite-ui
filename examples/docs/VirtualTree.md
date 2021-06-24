@@ -9,9 +9,9 @@
 ```html
 <template>
     <div class="main">
-        <infinite-virtual-tree ref="virtualTree" :option="option" :treeOptions="treeOptions">
+        <infinite-virtual-tree ref="virtualTree" :data="treeData" :option="option" :treeOptions="treeOptions">
             <template v-slot="{ item, index }">
-                <div>{{ item.label }}</div>
+                <div>{{ item }}</div>
             </template>
         </infinite-virtual-tree>
     </div>
@@ -44,7 +44,7 @@
         const id = generateId();
         return {
             id: id,
-            label: `${label}_${id}`
+            name: `${label}_${id}`
         };
     };
     const generateChild = function(tree, level = 1, maxNode) {
@@ -79,15 +79,14 @@
                 },
                 treeOptions: [{
                     lazy: true,
+                    nodeKey:'id',
                     loadFn: async (node, resolve) => {
                         let treeData = []
-                        if (node.level === 0) {
-                            treeData = generateData(10000)
-                        } else {
-                            // 获取子节点
-                            treeData = generateData(5)
+                        if (node.level > 0) {
+                            const treeData = generateData(1000)
+                            return resolve(treeData)
                         }
-                        return resolve(treeData)
+
                     }
                 }]
             };

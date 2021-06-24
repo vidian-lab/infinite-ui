@@ -7,12 +7,14 @@
   >
     <infinite-tree
       ref="virtualTree"
-      node-key="id"
+      :data="visibleData"
       :style="{ height: contentHeight, transform: `translateY(${offset}px)` }"
       v-bind="treeOptions"
       :load="loadFn"
+      :default-expanded-keys="defaultExpandedKeys"
+      :node-collapse="nodeCollapse"
     >
-      <span slot-scope="{ data }">{{ data.label }}</span>
+      <span slot-scope="{ data }">{{ data.name }}</span>
     </infinite-tree>
   </div>
 </template>
@@ -36,6 +38,8 @@ export default {
       visibleData: [],
       allNodeData: [],
       translateY: 0,
+      start: 0,
+      defaultExpandedKeys: [],
     };
   },
   computed: {
@@ -44,6 +48,7 @@ export default {
     },
   },
   mounted() {
+    this.lazyData = this.data;
     this.flattenTree();
     this.updateView();
   },
@@ -63,55 +68,31 @@ export default {
     },
     updateVisibleData(scrollTop = 0) {
       this.visibleData = [];
-      let start =
+      this.visibleData = this.getVisibleData(this.allNodeData, scrollTop);
+      this.offset = this.start * this.option.itemHeight;
+    },
+
+    getVisibleData(allNodeData, scrollTop, isShowVisible = true) {
+      let _visibleData = [];
+      let _start = this.start;
+      _start =
         Math.floor(scrollTop / this.option.itemHeight) -
         Math.floor(this.visibleCount / 2);
 
-      start = start < 0 ? 0 : start;
-
-      console.log(`scrollTop:${scrollTop}`,start);
-      const end = start + this.visibleCount * 2;
-
-      const allVisibleData = (this.allNodeData || []).filter(
-        (item) => item.visible
-      );
-
-      this.visibleData = [...allVisibleData.slice(start, end)];
-      this.offset = start * this.option.itemHeight;
+      _start = _start < 0 ? 0 : _start;
+      const end = _start + this.visibleCount * 2;
+      const allVisibleData = isShowVisible
+        ? (allNodeData || []).filter((item) => item.visible)
+        : allNodeData;
+      _visibleData = [...allVisibleData.slice(_start, end)];
+      this.start = _start;
+      return _visibleData;
     },
     getContentHeight() {
       this.contentHeight =
         (this.allNodeData || []).filter((item) => item.visible).length *
           this.option.itemHeight +
         "px";
-    },
-
-    toggleExpand(item) {
-      // 点击支持异步加载
-      if (this.lazy && this.load) {
-        const loadFn = this.load;
-        loadFn(item, (data) => {
-          // 挂载子节点
-          const nodeIndex =
-            this.allNodeData.findIndex((t) => t.id === item.id) + 1;
-
-          data.forEach((child, index) => {
-            child.level = item.level + 1;
-            child.visible = true;
-            child.expand = false;
-            child.parent = {
-              id: item.id,
-              label: item.label,
-              level: item.level,
-            };
-            item.children.unshift(child);
-            this.allNodeData.splice(nodeIndex + index, 0, child);
-          });
-          this.expandStateChange(item);
-        });
-      } else {
-        this.expandStateChange(item);
-      }
     },
 
     expandStateChange(item) {
@@ -125,14 +106,15 @@ export default {
     },
 
     // 展开节点
-    expand(item) {
-      item.expand = true;
-      this.recursionVisible(item.children, true);
-    },
+    expand() {},
     // 折叠节点
     collapse(item) {
       item.expand = false;
       this.recursionVisible(item.children, false);
+    },
+
+    nodeCollapse(data, node, self) {
+  
     },
 
     // 折叠所有
@@ -166,11 +148,30 @@ export default {
         if (node.level === 0) {
           that.lazyData = data;
         } else {
-          // 处理子节点
+          // 挂载子节点
+          const nodeData = node.data;
+          this.defaultExpandedKeys.push(nodeData.id);
+          nodeData.expand = true;
+          nodeData.children = [];
+          const _data = that.getVisibleData(
+            data,
+            this.$refs.scroller.scrollTop || 0,
+            false
+          );
+          _data.forEach((child) => {
+            child.level = nodeData.level + 1;
+            child.visible = true;
+            child.expand = false;
+            child.parent = {
+              id: nodeData.id,
+              label: nodeData.name,
+              level: nodeData.level,
+            };
+            nodeData.children.unshift(child);
+          });
+          data = _data;
         }
-        await that.flattenTree();
-        await that.updateView();
-        return resolve(that.visibleData);
+        return resolve(data);
       });
     },
 
@@ -183,52 +184,52 @@ export default {
         }
       });
     },
+    flatten(
+      list,
+      childKey = "children",
+      level = 1,
+      parent = null,
+      defaultExpand = this.defaultExpand
+    ) {
+      let arr = [];
+      list.forEach((item) => {
+        item.level = level;
+        if (item.expand === undefined) {
+          item.expand = defaultExpand;
+        }
+        if (item.visible === undefined) {
+          item.visible = true;
+        }
+        if (!parent.visible || !parent.expand) {
+          item.visible = false;
+        }
+        item.parent = {
+          id: parent.id,
+          expand: parent.expand,
+          label: parent.label,
+          level: parent.level,
+          visible: parent.visible,
+        };
+        arr.push(item);
+        if (item[childKey]) {
+          arr.push(
+            ...this.flatten(
+              item[childKey],
+              childKey,
+              level + 1,
+              item,
+              defaultExpand
+            )
+          );
+        }
+      });
+      this.allNodeData = arr;
+      return arr;
+    },
+
     flattenTree() {
-      const that = this;
-      const flatten = function (
-        list,
-        childKey = "children",
-        level = 1,
-        parent = null,
-        defaultExpand = that.defaultExpand
-      ) {
-        let arr = [];
-        list.forEach((item) => {
-          item.level = level;
-          if (item.expand === undefined) {
-            item.expand = defaultExpand;
-          }
-          if (item.visible === undefined) {
-            item.visible = true;
-          }
-          if (!parent.visible || !parent.expand) {
-            item.visible = false;
-          }
-          item.parent = {
-            id: parent.id,
-            expand: parent.expand,
-            label: parent.label,
-            level: parent.level,
-            visible: parent.visible,
-          };
-          arr.push(item);
-          if (item[childKey]) {
-            arr.push(
-              ...flatten(
-                item[childKey],
-                childKey,
-                level + 1,
-                item,
-                defaultExpand
-              )
-            );
-          }
-        });
-        that.allNodeData = arr;
-        return arr;
-      };
       const cumputedData = this.treeOptions[0].lazy ? this.lazyData : this.data;
-      return flatten(cumputedData, "children", 1, {
+      return this.flatten(cumputedData, "children", 1, {
         level: 0,
         visible: true,
         expand: true,
