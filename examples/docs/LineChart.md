@@ -8,6 +8,7 @@
 ```html
 <template>
   <infinite-line-chart
+    :chartCfg="chartCfg"
     :is-smooth="true"
     :axis-name="axisName"
     :data="data"
@@ -43,6 +44,9 @@
           value: 'GDP(亿美元)',
           type: '国家',
         },
+        chartCfg: {
+          padding: [42, 20, 80, 50]
+        },
         showPoint: true,
         useTooltip: true,
         tooltipCfg: {
@@ -50,6 +54,9 @@
           showCrosshairs: true,
           crosshairs: {
             type: 'x',
+            line: {
+              fill: 'rgba(255,255,255,0.5)'
+            }
           },
         },
         legendConfig: {
@@ -68,14 +75,13 @@
 
 | 参数         | 说明                                     | 类型    | 可选值 | 默认值                                    |
 | ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
+| chartCfg         | Chart 图表对象                                 | Object   | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}`     | —                                         |
 | data         | 渲染数据                                 | Array   | —      | —                                         |
 | axis-name    | 坐标轴名称                               | Object  | —      | —                                         |
 | axis-color   | 坐标轴颜色                               | Object  | —      | `{ lineColor: '#ccc',labelColor: '#999'}` |
 | single-color | 单颜色                                   | String  | —      | '#1890ff'                                 |
 | show-legend  | 是否显示图例                             | Boolean | —      | true                                      |
-| legendConfig  | 对 field 字段对应的图例进行配置。                             | object | —      | `{
-          position: 'bottom-center'
-        }`                                      |
+| legendConfig  | 对 field 字段对应的图例进行配置。                             | object | —      | `{position: 'bottom-center'}`                                      |
 | show-point   | showPoint                                | Boolean | —      | true                                      |
 | is-percent   | `value` 数据是否是百分数（整数和百分数） | Boolean | —      | false                                     |
 | is-smooth    | 是否显示曲线                             | Boolean | —      | false                                     |

@@ -15,6 +15,11 @@ export default {
   },
   mixins: [mixinChart],
   props: {
+    // chartCfg
+    chartCfg: {
+      type: Object,
+      default: () => {}
+    },
     // 数据
     
     data: {
@@ -83,21 +88,12 @@ export default {
     tooltipCfg: {
       type: Object,
       default: () => ({})
-    },
-    // 内边距
-    padding: {
-      type: Array,
-      default: function () {
-        return [42, 20, 80, 50]
-      }
     }
   },
   methods: {
     setChartConfig: function (data) {
       // 为 chart 装载数据
-      // this.chart.source(data)
       this.chart.data(data)
-      // this.chart.render()
       // 进行列定义
       let _this = this
       let scaleConfig = (function () {
@@ -113,6 +109,8 @@ export default {
             }
           }
         }
+        obj.alias = '现金流(亿)'
+
         obj.value = {
           min: 0,
           nice: true
@@ -121,9 +119,9 @@ export default {
         }
         return obj
       }())
-      console.log('scaleConfig', scaleConfig)
       this.chart.scale(scaleConfig)
 
+      // 配置tooltip
       // 是否使用tooltip
       if (this.useTooltip) {
         // 配置图表tooltip
@@ -145,10 +143,11 @@ export default {
       // 坐标轴配置
       this.chart.axis('name', {
         tickLine: false
+       
       })
       this.chart.axis('value', {
         line: {
-          lineWidth: 1, // 设置线的宽度
+          // lineWidth: 1, // 设置线的宽度
           stroke: '#d9d9d9', // 设置线的颜色
           lineDash: [1, 1]// 设置虚线
         },
@@ -156,7 +155,7 @@ export default {
           lineStyle: {
             lineDash: null,
             stroke: '#d9d9d9',
-            lineWidth: 1
+            lineWidth: 10
           }
         },
         label: {

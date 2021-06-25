@@ -65,18 +65,18 @@ export default {
       if (dom && dom.innerHTML) {
         dom.innerHTML = ''
       }
-      return new Chart({
-        container: this.id,
-        width: dom.offsetWidth || 800,
-        height: dom.innerHeight || 500,
-        padding: this.padding,
-        renderer: 'canvas'
+      return new Chart({ 
+        ...{
+          container: this.id,
+          width: dom.offsetWidth || 800,
+          height: dom.innerHeight || 500
+        },
+        ...this.chartCfg 
       })
     },
     drawChart (data) {
       // 新建实例
       this.chart = this.constructChart()
-
       // 配置图表
       this.setChartConfig(data)
 
