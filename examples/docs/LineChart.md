@@ -10,7 +10,9 @@
   <infinite-line-chart
     :chartCfg="chartCfg"
     :is-smooth="true"
-    :axis-name="axisName"
+    :color="color"
+    :point-cfg="pointCfg"
+    :axis-config="axisConfig"
     :data="data"
     :showPoint="showPoint"
     :tooltipCfg="tooltipCfg"
@@ -23,8 +25,9 @@
   export default {
     data() {
       return {
-        key: 'value',
-        label:'name',
+        chartCfg: {
+          padding: [42, 20, 80, 70]
+        },
         data: [
           { name: '1997', value: 860, type: 'America' },
           { name: '2007', value: 144, type: 'America' },
@@ -39,16 +42,76 @@
           { name: '2007', value: 344, type: 'Germany' },
           { name: '2017', value: 368, type: 'Germany' },
         ],
-        axisName: {
-          name: '年份',
-          value: 'GDP(亿美元)',
-          type: '国家',
+        color: {
+          //映射的数据值
+          key: 'type', 
+          value: ['red','green','blue','yellow']
         },
-        chartCfg: {
-          padding: [42, 20, 80, 50]
+        axisConfig: {
+          x: {
+            key: 'name',
+            cfg: {
+              title:{
+                style: {
+                  fill: 'blue',
+                },
+              }
+            },
+            scaleCfg: {
+              alias: '年份',
+            },
+          },
+          y: {
+            key: 'value',
+            scaleCfg: {
+              alias: '销售量',
+              min: 0,
+              nice: true,
+              tickCount: 6,
+              formatter: (v,i) => {
+                return '-' + v + '-'
+              }
+            },
+            cfg: {
+              title:{
+                style: {
+                  fill: 'red',
+                },
+              },
+              line: {
+                // lineWidth: 1, // 设置线的宽度
+                stroke: '#d9d9d9', // 设置线的颜色
+                lineDash: [1, 1]// 设置虚线
+              },
+              grid: {
+                line: {
+                  // type: 'line',
+                  stroke: '#d9d9d9',
+                  lineWidth: 1,
+                  lineDash: [4, 4]
+                }
+              },
+              label: {
+                offset: 10,
+                autoRotate: false,
+                rotate: 0,
+                formatter: (text, item, index) => {
+                  return text + ''
+                }
+              }
+            }
+          }
         },
+        //点图配置
         showPoint: true,
+        pointCfg: {
+          style: {
+          stroke: 'red',
+          lineWidth: 1
+          }
+        },
         useTooltip: true,
+        // tooltip配置
         tooltipCfg: {
           position: 'left',
           showCrosshairs: true,
@@ -59,7 +122,15 @@
             }
           },
         },
+        // 图例配置
         legendConfig: {
+          marker: {
+            style: {
+              opacity: 0.8
+            },
+            symbol: 'square',
+            spacing: 4,
+          },
           position: 'bottom', // 设置图例的显示位置
           spacingX: 20 // 图例项之间的水平间距
         }
@@ -73,18 +144,16 @@
 
 ### Attributes
 
-| 参数         | 说明                                     | 类型    | 可选值 | 默认值                                    |
-| ------------ | ---------------------------------------- | ------- | ------ | ----------------------------------------- |
-| chartCfg         | Chart 图表对象                                 | Object   | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}`     | —                                         |
-| data         | 渲染数据                                 | Array   | —      | —                                         |
-| axis-name    | 坐标轴名称                               | Object  | —      | —                                         |
-| axis-color   | 坐标轴颜色                               | Object  | —      | `{ lineColor: '#ccc',labelColor: '#999'}` |
-| single-color | 单颜色                                   | String  | —      | '#1890ff'                                 |
-| show-legend  | 是否显示图例                             | Boolean | —      | true                                      |
-| legendConfig  | 对 field 字段对应的图例进行配置。                             | object | —      | `{position: 'bottom-center'}`                                      |
-| show-point   | showPoint                                | Boolean | —      | true                                      |
-| is-percent   | `value` 数据是否是百分数（整数和百分数） | Boolean | —      | false                                     |
-| is-smooth    | 是否显示曲线                             | Boolean | —      | false                                     |
-| show-grid    | 是否显示网格线                           | Boolean | —      | true                                      |
-| use-tooltip  | 是否显示提示                             | Boolean | —      | true                                      |
-| padding      | 内边距                                  | Array   | —     | `['auto', 'auto']`  || `[20, 20, 95, 80], // 上，右，下，左`                      |
+| 参数         | 说明                                     | 类型    | 可选值                                                                               | 默认值                                    |
+| ------------ | ---------------------------------------- | ------- | ------------------------------------------------------------------------------------ | ----------------------------------------- |
+| chartCfg     | Chart 图表对象                           | Object  | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}` | —                                         |
+| data         | 渲染数据                                 | Array   | —                                                                                    | —                                         |
+| axisConfig         | xaxis yaxis scaleconfig                                 | Object   | —                                                                                    | —                                         |
+| color   | 坐标轴颜色                               | Object  | —                                                                                    | `{ key: 'type',value: '#999'}` |
+| show-legend  | 是否显示图例                             | Boolean | —                                                                                    | true                                      |
+| legendConfig | 对 field 字段对应的图例进行配置。        | object  | —                                                                                    | `{position: 'bottom-center'}`             |
+| show-point   | showPoint                                | Boolean | —                                                                                    | true                                      |
+| is-smooth    | 是否显示曲线                             | Boolean | —                                                                                    | false                                     |
+| show-grid    | 是否显示网格线                           | Boolean | —                                                                                    | true                                      |
+| use-tooltip  | 是否显示提示                             | Boolean | —                                                                                    | true                                      |
+| padding      | 内边距                                   | Array   | —                                                                                    | `['auto', 'auto']`                        |  | `[20, 20, 95, 80], // 上，右，下，左` |
