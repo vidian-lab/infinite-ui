@@ -54,6 +54,7 @@
               title:{
                 style: {
                   fill: 'blue',
+                  fontSize: 12,
                 },
               }
             },
@@ -73,6 +74,17 @@
               }
             },
             cfg: {
+              // subTickCount: 20,
+              // subTickLine: {
+              //   length: 2,
+              //   stroke: 'red',
+              //   lineWidth: 1
+              // },
+              tickLine: {
+                length: 2,
+                lineWidth: 2,
+                stroke: '#000'
+              },
               title:{
                 style: {
                   fill: 'red',
@@ -85,7 +97,6 @@
               },
               grid: {
                 line: {
-                  // type: 'line',
                   stroke: '#d9d9d9',
                   lineWidth: 1,
                   lineDash: [4, 4]
@@ -148,12 +159,13 @@
 | ------------ | ---------------------------------------- | ------- | ------------------------------------------------------------------------------------ | ----------------------------------------- |
 | chartCfg     | Chart 图表对象                           | Object  | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}` | —                                         |
 | data         | 渲染数据                                 | Array   | —                                                                                    | —                                         |
-| axisConfig         | xaxis yaxis scaleconfig                                 | Object   | —                                                                                    | —                                         |
+| axisConfig         | xaxis yaxis scaleconfig-对应x轴y轴配置和对应的度量配置                              | Object   | `{ x: { key: 'name', cfg: {} },y: { key: 'value', cfg: {} } }`—                                                                                    | —                                         |
 | color   | 坐标轴颜色                               | Object  | —                                                                                    | `{ key: 'type',value: '#999'}` |
 | show-legend  | 是否显示图例                             | Boolean | —                                                                                    | true                                      |
-| legendConfig | 对 field 字段对应的图例进行配置。        | object  | —                                                                                    | `{position: 'bottom-center'}`             |
-| show-point   | showPoint                                | Boolean | —                                                                                    | true                                      |
+| legendConfig | 对 field 字段对应的图例进行配置。        | Object  | —                                                                                    | `{position: 'bottom-center'}`             |
+| show-point   | 是否需要点图                                | Boolean | —                                                                                    | true                                      |
+| pointCfg   | 点图配置                                | Object | —                                                                                    | {}                                      |
 | is-smooth    | 是否显示曲线                             | Boolean | —                                                                                    | false                                     |
 | show-grid    | 是否显示网格线                           | Boolean | —                                                                                    | true                                      |
 | use-tooltip  | 是否显示提示                             | Boolean | —                                                                                    | true                                      |
-| padding      | 内边距                                   | Array   | —                                                                                    | `['auto', 'auto']`                        |  | `[20, 20, 95, 80], // 上，右，下，左` |
+| tooltipCfg  | tooltip配置                           | Object | —                                                                                        | `{}`                        | 
