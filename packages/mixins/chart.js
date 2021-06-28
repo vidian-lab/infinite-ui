@@ -1,5 +1,15 @@
 
-const { Chart, registerEngine, registerGeometry, registerComponentController, registerInteraction, registerAction } = require('@antv/g2/lib/core')
+import { uuidv4 } from 'infinite-ui/packages/utils/index'
+// 注册需要的动画执行函数
+import { fadeIn, fadeOut } from '@antv/g2/lib/animate/animation/fade'
+import { growInX, growInXY, growInY } from '@antv/g2/lib/animate/animation/grow-in'
+import { pathIn } from '@antv/g2/lib/animate/animation/path-in'
+import { positionUpdate } from '@antv/g2/lib/animate/animation/position-update'
+import { scaleInX, scaleInY } from '@antv/g2/lib/animate/animation/scale-in'
+import { sectorPathUpdate } from '@antv/g2/lib/animate/animation/sector-path-update'
+import { waveIn } from '@antv/g2/lib/animate/animation/wave-in'
+import { zoomIn, zoomOut } from '@antv/g2/lib/animate/animation/zoom'
+const { Chart, registerEngine, registerGeometry, registerComponentController, registerInteraction, registerAction, registerAnimation } = require('@antv/g2/lib/core')
 const Line = require('@antv/g2/lib/geometry/line').default
 const Point = require('@antv/g2/lib/geometry/point').default
 const Interval = require('@antv/g2/lib/geometry/interval').default
@@ -9,6 +19,7 @@ const TooltipAction = require('@antv/g2/lib/interaction/action/component/tooltip
 const Legend = require('@antv/g2/lib/chart/controller/legend').default
 const Coordinate = require('@antv/coord/lib/factory').default
 const G = require('@antv/g-canvas')
+
 // 按需注入
 registerEngine('canvas', G)
 registerGeometry('line', Line)
@@ -33,11 +44,24 @@ registerInteraction('tooltip', {
     { trigger: 'plot:touchend', action: 'tooltip:hide' }
   ]
 })
-
+// 动画引入
+registerAnimation('fade-in', fadeIn)
+registerAnimation('fade-out', fadeOut)
+registerAnimation('grow-in-x', growInX)
+registerAnimation('grow-in-xy', growInXY)
+registerAnimation('grow-in-y', growInY)
+registerAnimation('scale-in-x', scaleInX)
+registerAnimation('scale-in-y', scaleInY)
+registerAnimation('wave-in', waveIn)
+registerAnimation('zoom-in', zoomIn)
+registerAnimation('zoom-out', zoomOut)
+registerAnimation('position-update', positionUpdate)
+registerAnimation('sector-path-update', sectorPathUpdate)
+registerAnimation('path-in', pathIn)
 export default {
   computed: {
     id: function () {
-      return this.uuidv4()
+      return uuidv4()
     }
   },
   data () {
@@ -63,18 +87,18 @@ export default {
       if (dom && dom.innerHTML) {
         dom.innerHTML = ''
       }
-      return new Chart({
-        container: this.id,
-        width: dom.offsetWidth || 800,
-        height: dom.offsetHeight || 500,
-        // padding: this.padding || ['auto', 'auto'],
-        renderer: 'canvas'
+      return new Chart({ 
+        ...{
+          container: this.id,
+          width: dom.offsetWidth || 800,
+          height: dom.innerHeight || 500
+        },
+        ...this.chartCfg 
       })
     },
     drawChart (data) {
       // 新建实例
       this.chart = this.constructChart()
-
       // 配置图表
       this.setChartConfig(data)
 
