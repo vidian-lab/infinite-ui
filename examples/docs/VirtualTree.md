@@ -9,9 +9,9 @@
 ```html
 <template>
     <div class="main">
-        <infinite-virtual-tree ref="virtualTree" :data="treeData" :option="option" :treeOptions="treeOptions">
-            <template v-slot="{ item, index }">
-                <div>{{ item }}</div>
+        <infinite-virtual-tree ref="virtualTree" :tree="treeData" :defaultExpand="false" :option="option">
+            <template v-slot="{ item }">
+                <div>{{ item.name }}</div>
             </template>
         </infinite-virtual-tree>
     </div>
@@ -73,36 +73,28 @@
     export default {
         data() {
             return {
+                treeData: [],
                 option: {
                     height: 200, //滚动容器的高度
-                    itemHeight: 32 // 单个item的高度
-                },
-                treeOptions: [{
+                    itemHeight: 32, // 单个item的高度
                     lazy: true,
-                    nodeKey:'id',
-                    loadFn: async (node, resolve) => {
-                        let treeData = []
-                        if (node.level > 0) {
-                            const treeData = generateData(1000)
-                            return resolve(treeData)
-                        }
-
-                    }
-                }]
+                    load: (node, resolve) => {
+                        const data = generateData(1000);
+                        resolve(data);
+                    },
+                }
             };
         },
-        computed: {
-            treeData() {
-                return generateData(10000);
-            },
+        mounted() {
+            this.getTreeData();
         },
         methods: {
-            collapseAll() {
-                this.$refs.virtualTree.collapseAll();
+            getTreeData() {
+                this.treeData = generateData(100000);
+                this.$nextTick(() => {
+                    this.$refs.virtualTree.referesh();
+                });
             },
-            expandAll() {
-                this.$refs.virtualTree.expandAll();
-            }
         }
     }
 </script>

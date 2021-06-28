@@ -1,38 +1,32 @@
 export default {
     props: {
-        data: {
-            type: Array,
-            default: () => [],
+        tree: {
+          type: Array,
+          required: true,
+          default() {
+            return [];
+          },
         },
         defaultExpand: {
-            type: Boolean,
-            default: false,
+          type: Boolean,
+          required: false,
+          default: false,
         },
         timeout: {
-            // 刷新频率
-            type: Number,
-            default: 10,
+          //刷新频率
+          type: Number,
+          default: 17,
         },
         option: {
-            // 配置对象
-            type: Object,
-            default: () => ({
-                height: 500, // 滚动容器的高度
-                itemHeight: 25, // 单个item的高度
-            }),
+          // 配置对象
+          type: Object,
+          required: true,
+          default() {
+            return {
+              height: 500, //滚动容器的高度
+              itemHeight: 25, // 单个item的高度
+            };
+          },
         },
-        lazy: {
-            // 是否懒加载
-            type: Boolean,
-            default: false,
-        },
-        load: {
-            type: [Function, undefined],
-            default: undefined,
-        },
-        treeOptions:{
-            type:Array,
-            default:()=>[]
-        }
-    }
+      }
 }
