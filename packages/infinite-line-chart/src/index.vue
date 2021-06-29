@@ -52,7 +52,7 @@ export default {
     },
     legendConfig: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     // 是否显示点
     showPoint: {
@@ -61,7 +61,7 @@ export default {
     },
     pointCfg: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     // 是否显示曲线
     isSmooth: {
@@ -73,13 +73,20 @@ export default {
       type: Boolean,
       default: true
     },
+    // 是否打开tooltip
     useTooltip: {
       type: Boolean,
       default: true
     },
+    // tooltip配置
     tooltipCfg: {
       type: Object,
       default: () => ({})
+    },
+    // 是否移除某个交互如点击筛选数据
+    removeInteractionOption: {
+      type: Array,
+      default: () => ([])
     }
   },
   methods: {
@@ -111,15 +118,14 @@ export default {
       } else {
         this.chart.tooltip(false)
       }
-
       // 配置图表图例
       if (this.showLegend) {
         this.chart.legend('type', { ...{
-          position: 'bottom-center'
+          position: 'bottom'
         },
         ...this.legendConfig })
       } else {
-        this.chart.legend('type', false)
+        this.chart.legend(false) // 关闭图例
       }
       let valueStr = `${this.axisConfig['x']['key']}*${this.axisConfig['y']['key']}` || 'name*value'
       // 配置折线和散点的颜色、形状等
@@ -140,6 +146,11 @@ export default {
       // 折线是否显示为曲线
       if (this.isSmooth) {
         line.shape('smooth')
+      }
+
+      // 移除传入的相关交互
+      if (Array.isArray(this.removeInteractionOption) && this.removeInteractionOption.length) {
+        this.chart.removeInteraction(...this.removeInteractionOption)
       }
     }
   }

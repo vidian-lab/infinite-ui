@@ -20,6 +20,8 @@ const Legend = require('@antv/g2/lib/chart/controller/legend').default
 const Coordinate = require('@antv/coord/lib/factory').default
 const G = require('@antv/g-canvas')
 
+require('infinite-ui/packages/mixins/chart-legend')
+
 // 按需注入
 registerEngine('canvas', G)
 registerGeometry('line', Line)
@@ -91,7 +93,8 @@ export default {
         ...{
           container: this.id,
           width: dom.offsetWidth || 800,
-          height: dom.innerHeight || 500
+          height: dom.innerHeight || 500,
+          padding: [42, 20, 80, 70]
         },
         ...this.chartCfg 
       })

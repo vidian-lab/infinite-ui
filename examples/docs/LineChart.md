@@ -17,6 +17,7 @@
     :showPoint="showPoint"
     :tooltipCfg="tooltipCfg"
     :useTooltip="useTooltip"
+    :showLegend="showLegend"
     :legendConfig="legendConfig"
   >
   </infinite-line-chart>
@@ -26,7 +27,7 @@
     data() {
       return {
         chartCfg: {
-          padding: [42, 20, 80, 70]
+          // padding: [42, 20, 80, 70]
         },
         data: [
           { name: '1997', value: 860, type: 'America' },
@@ -122,6 +123,7 @@
           }
         },
         useTooltip: true,
+        showLegend: true,
         // tooltip配置
         tooltipCfg: {
           position: 'left',
@@ -139,11 +141,36 @@
             style: {
               opacity: 0.8
             },
-            symbol: 'square',
-            spacing: 4,
+            symbol: 'circle', // square
+            spacing: 4, // 彼此之间空间
           },
-          position: 'bottom', // 设置图例的显示位置
-          spacingX: 20 // 图例项之间的水平间距
+          offsetX: 0, // x轴偏移
+          position: 'bottom', // 设置图例的显示位置"top" | "top-left" | "top-right" | "right" | "right-top" | "right-bottom" | "left" | "left-top" | "left-bottom" | "bottom" | "bottom-left" | "bottom-right"
+          spacingX: 200, // 图例项之间的水平间距
+          // items: [ // legend单独配置
+          //   {
+          //     name: 'America',
+          //     marker: {
+          //       symbol: 'circle',
+          //       style: {fill: 'red', r: 5},
+          //     },
+          //   },
+          //   {
+          //     name: 'China',
+          //     marker: {symbol: 'circle', style: {fill: 'green', r: 5}},
+          //   },
+          //   {
+          //     name: 'Japan',
+          //     marker: {symbol: 'circle', style: {fill: 'blue', r: 5}},
+          //   },
+          //   {
+          //     name: 'Germany',
+          //     marker: {symbol: 'circle', style: {fill: 'yellow', r: 5}},
+          //   },
+          // ],
+          // selected: { // 默认选中与否
+          //   'Germany': false
+          // },
         }
       };
     },
@@ -162,10 +189,12 @@
 | axisConfig         | xaxis yaxis scaleconfig-对应x轴y轴配置和对应的度量配置                              | Object   | `{ x: { key: 'name', cfg: {} },y: { key: 'value', cfg: {} } }`—                                                                                    | —                                         |
 | color   | 坐标轴颜色                               | Object  | —                                                                                    | `{ key: 'type',value: '#999'}` |
 | show-legend  | 是否显示图例                             | Boolean | —                                                                                    | true                                      |
-| legendConfig | 对 field 字段对应的图例进行配置。        | Object  | —                                                                                    | `{position: 'bottom-center'}`             |
+| showLegend | 对 field 字段对应的图例是否显示。        | Boolean  | —                                                                                    | true|false             |
+| legendConfig | 对 field 字段对应的图例进行配置。        | Object  | —                                                                                    | true             |
 | show-point   | 是否需要点图                                | Boolean | —                                                                                    | true                                      |
 | pointCfg   | 点图配置                                | Object | —                                                                                    | {}                                      |
 | is-smooth    | 是否显示曲线                             | Boolean | —                                                                                    | false                                     |
 | show-grid    | 是否显示网格线                           | Boolean | —                                                                                    | true                                      |
 | use-tooltip  | 是否显示提示                             | Boolean | —                                                                                    | true                                      |
 | tooltipCfg  | tooltip配置                           | Object | —                                                                                        | `{}`                        | 
+| removeInteractionOption  | 移除包括点击legend筛选数据在内的交互   | Array | `legend-filter`                                                           | []                       | 
