@@ -25,6 +25,7 @@ import InfiniteTree from './infinite-tree'
 import InfiniteVirtualTree from './infinite-virtual-tree'
 import InfiniteToolTips from './infinite-tooltips'
 import InfiniteOperation from './infinite-operation'
+import InfiniteScrollBar from './infinite-scrollbar'
 
 const version = '1.0.11-alpha'
 const components = [
@@ -53,7 +54,8 @@ const components = [
   InfiniteFormSearch,
   InfiniteVirtualTree,
   InfiniteToolTips,
-  InfiniteOperation
+  InfiniteOperation,
+  InfiniteScrollBar
 ]
 const install = Vue => {
   components.forEach(Component => {
@@ -95,7 +97,8 @@ export {
   InfiniteTree,
   InfiniteVirtualTree,
   InfiniteToolTips,
-  InfiniteOperation
+  InfiniteOperation,
+  InfiniteScrollBar
 }
 export default {
   install,
@@ -125,5 +128,6 @@ export default {
   InfiniteFormSearch,
   InfiniteVirtualTree,
   InfiniteToolTips,
-  InfiniteOperation
+  InfiniteOperation,
+  InfiniteScrollBar
 }
