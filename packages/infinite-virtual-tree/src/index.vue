@@ -185,8 +185,8 @@ export default {
     },
     // 刷新树节点
     referesh () {
-      this.updateView()
       this.setScrollTopStart()
+      this.updateView()
     },
     setScrollTopStart () {
       this.$refs.scroller.scrollTop = 0
