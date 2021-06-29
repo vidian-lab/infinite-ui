@@ -63,52 +63,6 @@ export default {
   },
 
   computed: {
-    flattenTree () {
-      const _defaultExpand = this.defaultExpand
-
-      const flatten = function (
-        list,
-        childKey = 'children',
-        level = 1,
-        parent = null,
-        defaultExpand = _defaultExpand
-      ) {
-        let arr = []
-
-        list.forEach((item) => {
-          item.level = level
-          if (item.expand === undefined) {
-            item.expand = defaultExpand
-          }
-          if (item.visible === undefined) {
-            item.visible = true
-          }
-          if (!parent.visible || !parent.expand) {
-            item.visible = false
-          }
-          item.parent = parent
-          arr.push(item)
-          if (item[childKey]) {
-            arr.push(
-              ...flatten(
-                item[childKey],
-                childKey,
-                level + 1,
-                item,
-                defaultExpand
-              )
-            )
-          }
-        })
-        return arr
-      }
-      return flatten(this.tree, 'children', 1, {
-        level: 0,
-        visible: true,
-        expand: true,
-        children: []
-      })
-    },
     visibleCount () {
       return Math.floor(this.option.height / this.option.itemHeight)
     }
@@ -135,7 +89,7 @@ export default {
         Math.floor(this.visibleCount / 2)
       start = start < 0 ? 0 : start
       const end = start + this.visibleCount * 2
-      const allVisibleData = (this.flattenTree || []).filter(
+      const allVisibleData = (this.flattenTree() || []).filter(
         (item) => item.visible
       )
       this.visibleData = allVisibleData.slice(start, end)
@@ -144,7 +98,7 @@ export default {
 
     getContentHeight () {
       this.contentHeight =
-        (this.flattenTree || []).filter((item) => item.visible).length *
+        (this.flattenTree() || []).filter((item) => item.visible).length *
           this.option.itemHeight +
         'px'
     },
@@ -201,7 +155,7 @@ export default {
 
     // 折叠所有
     collapseAll (level = 1) {
-      this.flattenTree.forEach((item) => {
+      this.flattenTree().forEach((item) => {
         item.expand = false
         if (item.level !== level) {
           item.visible = false
@@ -212,7 +166,7 @@ export default {
 
     // 展开所有
     expandAll () {
-      this.flattenTree.forEach((item) => {
+      this.flattenTree().forEach((item) => {
         item.expand = true
         item.visible = true
       })
@@ -246,6 +200,57 @@ export default {
         ? ' infinite-virtual-tree__show-curent-node-line'
         : ''
       return classStr
+    },
+    flatten (
+      list,
+      childKey = 'children',
+      level = 1,
+      parent = null,
+      defaultExpand = this.defaultExpand
+    ) {
+      let arr = []
+      list.forEach((item) => {
+        item.level = level
+        if (item.expand === undefined) {
+          item.expand = defaultExpand
+        }
+        if (item.visible === undefined) {
+          item.visible = true
+        }
+        if (!parent.visible || !parent.expand) {
+          item.visible = false
+        }
+        item.parent = {
+          id: parent.id,
+          expand: parent.expand,
+          label: parent.label,
+          level: parent.level,
+          visible: parent.visible
+        }
+        arr.push(item)
+        if (item[childKey]) {
+          arr.push(
+            ...this.flatten(
+              item[childKey],
+              childKey,
+              level + 1,
+              item,
+              defaultExpand
+            )
+          )
+        }
+      })
+      this.allNodeData = arr
+      return arr
+    },
+
+    flattenTree () {
+      return this.flatten(this.tree, 'children', 1, {
+        level: 0,
+        visible: true,
+        expand: true,
+        children: this.tree
+      })
     }
   }
 }
