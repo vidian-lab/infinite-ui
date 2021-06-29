@@ -89,15 +89,13 @@ export default {
       if (dom && dom.innerHTML) {
         dom.innerHTML = ''
       }
-      return new Chart({ 
-        ...{
-          container: this.id,
-          width: dom.offsetWidth || 800,
-          height: dom.innerHeight || 500,
-          padding: [42, 20, 80, 70]
-        },
-        ...this.chartCfg 
-      })
+      const options = Object.assign({
+        container: this.id,
+        width: dom.offsetWidth || 800,
+        height: dom.innerHeight || 500,
+        padding: [42, 20, 80, 70]
+      }, this.chartCfg)
+      return new Chart(options)
     },
     drawChart (data) {
       // 新建实例
