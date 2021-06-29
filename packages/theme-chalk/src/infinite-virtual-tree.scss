@@ -1,11 +1,62 @@
-@import './common/var.scss';
+@import "./common/var.scss";
 .el-tree {
   overflow-y: auto;
 }
-.infinite-tree__phantom {
+.infinite-virtual-tree__phantom {
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   z-index: -1;
+}
+.infinite-virtual-tree {
+  &__is-leaf {
+    margin-right: 24px;
+    &::before {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 4px;
+      background-color: $--avatar-background-color;
+      position: absolute;
+      left: 9px;
+      top: 10px;
+    }
+  }
+  &__show-curent-node-line {
+    &::after {
+      content: "";
+      position: absolute;
+      border-left: 1px dashed #dcdfe6;
+      top: -10px;
+      left: -6px;
+      height: 30px;
+    }
+  }
+  &__level2 {
+    &::after {
+      left: -24px;
+    }
+  }
+  &__level3 {
+    &::after {
+      left: -42px;
+    }
+  }
+  &__level4 {
+    &::after {
+      left: -24px;
+    }
+  }
+  &__level5 {
+    &::after {
+      left: -42px;
+    }
+  }
+  &__level6 {
+    &::after {
+      left: -60px;
+    }
+  }
 }

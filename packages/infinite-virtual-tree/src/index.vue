@@ -6,12 +6,12 @@
     @scroll="handleScroll"
   >
     <div
-      class="infinite-tree__phantom"
+      class="infinite-virtual-tree__phantom"
       :style="{ height: contentHeight }"
     ></div>
     <div
       v-for="item in visibleData"
-      :key="item.id"
+      :key="item[nodeKey]"
       class="el-tree-node"
       :style="{
         paddingLeft: 18 * (item.level - 1) + 'px',
@@ -23,14 +23,24 @@
         :style="{ transform: `translateY(${offset}px)` }"
       >
         <span
-          v-if="(item.children && item.children.length) || option.lazy"
+          v-if="
+            (item.children && item.children.length) ||
+            (option.lazy && !item.isLeaf)
+          "
           class="el-tree-node__expand-icon el-icon-caret-right"
-          :class="item.expand ? 'expanded' : ''"
-          @click="toggleExpand(item)"
+          :class="[
+            { 'expanded infinite-virtual-tree__is-expanded': item.expand },
+          ]"
+          @click="loadChild(item)"
         >
         </span>
-        <span v-else style="margin-right: 5px"></span>
+        <span v-else class="infinite-virtual-tree__is-leaf"></span>
         <div class="el-tree-node__label">
+          <span
+            v-for="(line, index) in item.level - 1"
+            :key="index"
+            :class="getClass(item, index)"
+          ></span>
           <slot :item="item"></slot>
         </div>
       </div>
@@ -139,7 +149,7 @@ export default {
         "px";
     },
 
-    toggleExpand(item) {
+    loadChild(item) {
       // 支持懒加载
       if (this.option.lazy) {
         // 挂载子节点
@@ -157,26 +167,25 @@ export default {
                 label: item.name,
                 level: item.level,
               };
+              child.showTreeLine = !item.expand;
               item.children.push(child);
             });
-            const isExpand = item.expand;
-            if (isExpand) {
-              this.collapse(item, true); // 折叠
-            } else {
-              this.expand(item, true); // 展开
-            }
-            this.updateView();
+            item.isLeaf = item.children.length === 0;
+            this.toggleExpand(item);
           });
         }
       } else {
-        const isExpand = item.expand;
-        if (isExpand) {
-          this.collapse(item, true); // 折叠
-        } else {
-          this.expand(item, true); // 展开
-        }
-        this.updateView();
+        this.toggleExpand(item);
       }
+    },
+    toggleExpand(item) {
+      const isExpand = item.expand;
+      if (isExpand) {
+        this.collapse(item, true); // 折叠
+      } else {
+        this.expand(item, true); // 展开
+      }
+      this.updateView();
     },
 
     //展开节点
@@ -223,6 +232,16 @@ export default {
     // 刷新树节点
     referesh() {
       this.updateView();
+    },
+    getClass(item, index) {
+      let classStr = `infinite-virtual-tree__level${item.level + index - 1}`;
+      if (index + 1 === item.level-1) {
+        classStr = "";
+      }
+      classStr += item.showTreeLine
+        ? " infinite-virtual-tree__show-curent-node-line"
+        : "";
+      return classStr;
     },
   },
 };
