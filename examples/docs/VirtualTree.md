@@ -9,6 +9,7 @@
 ```html
 <template>
     <div class="main">
+     <infinite-button @click="refereshData">刷新数据</infinite-button>
         <infinite-virtual-tree ref="virtualTree" :tree="treeData" :defaultExpand="false" :option="option">
             <template v-slot="{ item }">
                 <div>{{ item.name }}</div>
@@ -95,6 +96,9 @@
                     this.$refs.virtualTree.referesh();
                 });
             },
+            refereshData(){
+                this.getTreeData()
+            }
         }
     }
 </script>

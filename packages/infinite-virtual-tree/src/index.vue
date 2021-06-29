@@ -49,45 +49,45 @@
 </template>
 
 <script>
-let lastTime = 0;
-import minxin from "./mixin";
+import minxin from './mixin'
+let lastTime = 0
 export default {
-  name: "InfiniteVirtualTree",
+  name: 'InfiniteVirtualTree',
   mixins: [minxin],
-  data() {
+  data () {
     return {
       offset: 0, // translateY偏移量
-      contentHeight: "0px",
-      visibleData: [],
-    };
+      contentHeight: '0px',
+      visibleData: []
+    }
   },
 
   computed: {
-    flattenTree() {
-      const _defaultExpand = this.defaultExpand;
+    flattenTree () {
+      const _defaultExpand = this.defaultExpand
 
       const flatten = function (
         list,
-        childKey = "children",
+        childKey = 'children',
         level = 1,
         parent = null,
         defaultExpand = _defaultExpand
       ) {
-        let arr = [];
+        let arr = []
 
         list.forEach((item) => {
-          item.level = level;
+          item.level = level
           if (item.expand === undefined) {
-            item.expand = defaultExpand;
+            item.expand = defaultExpand
           }
           if (item.visible === undefined) {
-            item.visible = true;
+            item.visible = true
           }
           if (!parent.visible || !parent.expand) {
-            item.visible = false;
+            item.visible = false
           }
-          item.parent = parent;
-          arr.push(item);
+          item.parent = parent
+          arr.push(item)
           if (item[childKey]) {
             arr.push(
               ...flatten(
@@ -97,154 +97,158 @@ export default {
                 item,
                 defaultExpand
               )
-            );
+            )
           }
-        });
-        return arr;
-      };
-      return flatten(this.tree, "children", 1, {
+        })
+        return arr
+      }
+      return flatten(this.tree, 'children', 1, {
         level: 0,
         visible: true,
         expand: true,
-        children: [],
-      });
+        children: []
+      })
     },
-    visibleCount() {
-      return Math.floor(this.option.height / this.option.itemHeight);
-    },
+    visibleCount () {
+      return Math.floor(this.option.height / this.option.itemHeight)
+    }
   },
-  mounted() {
-    this.updateView();
+  mounted () {
+    this.updateView()
   },
   methods: {
-    updateView() {
-      this.getContentHeight();
-      this.$emit("update", this.tree);
-      this.handleScroll();
+    updateView () {
+      this.getContentHeight()
+      this.handleScroll()
+      this.$emit('update', this.tree)
     },
-    handleScroll() {
-      let currentTime = +new Date();
+    handleScroll () {
+      let currentTime = +new Date()
       if (currentTime - lastTime > this.timeout) {
-        this.updateVisibleData(this.$refs.scroller.scrollTop);
-        lastTime = currentTime;
+        this.updateVisibleData(this.$refs.scroller.scrollTop)
+        lastTime = currentTime
       }
     },
-    updateVisibleData(scrollTop = 0) {
+    updateVisibleData (scrollTop = 0) {
       let start =
         Math.floor(scrollTop / this.option.itemHeight) -
-        Math.floor(this.visibleCount / 2);
-      start = start < 0 ? 0 : start;
-      const end = start + this.visibleCount * 2;
+        Math.floor(this.visibleCount / 2)
+      start = start < 0 ? 0 : start
+      const end = start + this.visibleCount * 2
       const allVisibleData = (this.flattenTree || []).filter(
         (item) => item.visible
-      );
-      this.visibleData = allVisibleData.slice(start, end);
-      this.offset = start * this.option.itemHeight;
+      )
+      this.visibleData = allVisibleData.slice(start, end)
+      this.offset = start * this.option.itemHeight
     },
 
-    getContentHeight() {
+    getContentHeight () {
       this.contentHeight =
         (this.flattenTree || []).filter((item) => item.visible).length *
           this.option.itemHeight +
-        "px";
+        'px'
     },
 
-    loadChild(item) {
+    loadChild (item) {
       // 支持懒加载
       if (this.option.lazy) {
         // 挂载子节点
-        const loadFn = this.option.load;
+        const loadFn = this.option.load
         if (loadFn) {
           loadFn(item, (data) => {
             // 挂载子节点
-            item.children = [];
+            item.children = []
             data.forEach((child) => {
-              child.level = item.level + 1;
-              child.visible = true;
-              child.expand = false;
+              child.level = item.level + 1
+              child.visible = true
+              child.expand = false
               child.parent = {
                 id: item.id,
                 label: item.name,
-                level: item.level,
-              };
-              child.showTreeLine = !item.expand;
-              item.children.push(child);
-            });
-            item.isLeaf = item.children.length === 0;
-            this.toggleExpand(item);
-          });
+                level: item.level
+              }
+              child.showTreeLine = !item.expand
+              item.children.push(child)
+            })
+            item.isLeaf = item.children.length === 0
+            this.toggleExpand(item)
+          })
         }
       } else {
-        this.toggleExpand(item);
+        this.toggleExpand(item)
       }
     },
-    toggleExpand(item) {
-      const isExpand = item.expand;
+    toggleExpand (item) {
+      const isExpand = item.expand
       if (isExpand) {
-        this.collapse(item, true); // 折叠
+        this.collapse(item, true) // 折叠
       } else {
-        this.expand(item, true); // 展开
+        this.expand(item, true) // 展开
       }
-      this.updateView();
+      this.updateView()
     },
 
-    //展开节点
-    expand(item) {
-      item.expand = true;
-      this.recursionVisible(item.children, true);
+    // 展开节点
+    expand (item) {
+      item.expand = true
+      this.recursionVisible(item.children, true)
     },
-    //折叠节点
-    collapse(item) {
-      item.expand = false;
-      this.recursionVisible(item.children, false);
+    // 折叠节点
+    collapse (item) {
+      item.expand = false
+      this.recursionVisible(item.children, false)
     },
 
-    //折叠所有
-    collapseAll(level = 1) {
+    // 折叠所有
+    collapseAll (level = 1) {
       this.flattenTree.forEach((item) => {
-        item.expand = false;
-        if (item.level != level) {
-          item.visible = false;
+        item.expand = false
+        if (item.level !== level) {
+          item.visible = false
         }
-      });
-      this.updateView();
+      })
+      this.updateView()
     },
 
-    //展开所有
-    expandAll() {
+    // 展开所有
+    expandAll () {
       this.flattenTree.forEach((item) => {
-        item.expand = true;
-        item.visible = true;
-      });
+        item.expand = true
+        item.visible = true
+      })
 
-      this.updateView();
+      this.updateView()
     },
 
-    //递归节点
-    recursionVisible(children, status) {
+    // 递归节点
+    recursionVisible (children, status) {
       children.forEach((node) => {
-        node.visible = status;
+        node.visible = status
         if (node.children) {
-          this.recursionVisible(node.children, status);
+          this.recursionVisible(node.children, status)
         }
-      });
+      })
     },
     // 刷新树节点
-    referesh() {
-      this.updateView();
+    referesh () {
+      this.updateView()
+      this.setScrollTopStart()
     },
-    getClass(item, index) {
-      let classStr = `infinite-virtual-tree__level${item.level + index - 1}`;
-      if (index + 1 === item.level-1) {
-        classStr = "";
+    setScrollTopStart () {
+      this.$refs.scroller.scrollTop = 0
+    },
+    getClass (item, index) {
+      let classStr = `infinite-virtual-tree__level${item.level + index - 1}`
+      if (index + 1 === item.level - 1) {
+        classStr = ''
       }
       classStr += item.showTreeLine
-        ? " infinite-virtual-tree__show-curent-node-line"
-        : "";
-      return classStr;
-    },
-  },
-};
+        ? ' infinite-virtual-tree__show-curent-node-line'
+        : ''
+      return classStr
+    }
+  }
+}
 </script>
 
 <style scoped>
