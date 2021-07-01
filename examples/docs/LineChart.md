@@ -8,13 +8,13 @@
 ```html
 <template>
   <infinite-line-chart
-    :chartCfg="chartCfg"
+    :chart-cfg="chartCfg"
     :is-smooth="true"
     :color="color"
     :point-cfg="pointCfg"
     :axis-config="axisConfig"
     :data="data"
-    :showPoint="showPoint"
+    :show-point="showPoint"
     :tooltipCfg="tooltipCfg"
     :useTooltip="useTooltip"
     :showLegend="showLegend"
@@ -182,19 +182,18 @@
 
 ### Attributes
 
-| 参数         | 说明                                     | 类型    | 可选值                                                                               | 默认值                                    |
-| ------------ | ---------------------------------------- | ------- | ------------------------------------------------------------------------------------ | ----------------------------------------- |
-| chartCfg     | Chart 图表对象                           | Object  | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}` | —                                         |
-| data         | 渲染数据                                 | Array   | —                                                                                    | —                                         |
-| axisConfig         | xaxis yaxis scaleconfig-对应x轴y轴配置和对应的度量配置                              | Object   | `{ x: { key: 'name', cfg: {} },y: { key: 'value', cfg: {} } }`—                                                                                    | —                                         |
-| color   | 坐标轴颜色                               | Object  | —                                                                                    | `{ key: 'type',value: '#999'}` |
-| show-legend  | 是否显示图例                             | Boolean | —                                                                                    | true                                      |
-| showLegend | 对 field 字段对应的图例是否显示。        | Boolean  | —                                                                                    | true|false             |
-| legendConfig | 对 field 字段对应的图例进行配置。        | Object  | —                                                                                    | true             |
-| show-point   | 是否需要点图                                | Boolean | —                                                                                    | true                                      |
-| pointCfg   | 点图配置                                | Object | —                                                                                    | {}                                      |
-| is-smooth    | 是否显示曲线                             | Boolean | —                                                                                    | false                                     |
-| show-grid    | 是否显示网格线                           | Boolean | —                                                                                    | true                                      |
-| use-tooltip  | 是否显示提示                             | Boolean | —                                                                                    | true                                      |
-| tooltipCfg  | tooltip配置                           | Object | —                                                                                        | `{}`                        | 
-| removeInteractionOption  | 移除包括点击legend筛选数据在内的交互   | Array | `legend-filter`                                                           | []                       | 
+| 参数                    | 说明                                                   | 类型    | 可选值                                                                               | 默认值                         |
+| ----------------------- | ------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------ | ------------------------------ |
+| chart-cfg                | Chart 图表对象                                         | Object  | `{ container: this.id,width: dom.offsetWidth || 800,height: dom.innerHeight || 500}` | —                              |
+| data                    | 渲染数据                                               | Array   | —                                                                                    | —                              |
+| axis-config              | xaxis yaxis scaleconfig-对应x轴y轴配置和对应的度量配置 | Object  | `{ x: { key: 'name', cfg: {} },y: { key: 'value', cfg: {} } }`—                      | —                              |
+| color                   | 坐标轴颜色                                             | Object  | —                                                                                    | `{ key: 'type',value: '#999'}` |
+| show-legend             | 是否显示图例                                           | Boolean | —                                                                                    | true                           |
+| legend-config            | 对 field 字段对应的图例进行配置。                      | Object  | —                                                                                    | true                           |
+| show-point              | 是否需要点图                                           | Boolean | —                                                                                    | true                           |
+| point-cfg                | 点图配置                                               | Object  | —                                                                                    | {}                             |
+| is-smooth               | 是否显示曲线                                           | Boolean | —                                                                                    | false                          |
+| show-grid               | 是否显示网格线                                         | Boolean | —                                                                                    | true                           |
+| use-tooltip             | 是否显示提示                                           | Boolean | —                                                                                    | true                           |
+| tooltip-cfg              | tooltip配置                                            | Object  | —                                                                                    | `{}`                           |
+| removeInteractionOption | 移除包括点击legend筛选数据在内的交互                   | Array   | `legend-filter`                                                                      | []                             |
