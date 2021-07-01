@@ -18,8 +18,7 @@ describe('InfiniteLineChart', () => {
   })
   it('should be mixins isloaded', async () => {
     expect(wrapper.vm.id).not.toBeNull()
-    console.log(wrapper.vm.drawChart, 'action')
-    const fn = jest.fn(wrapper.vm.drawChart)
-    await expect(fn).toHaveBeenCalled()
+    const fn = jest.fn(wrapper.vm.drawChart).mockReturnValue(true)
+    await expect(fn()).toBe(true)
   })
 })
