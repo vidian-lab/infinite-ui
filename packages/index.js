@@ -1,6 +1,7 @@
 /* eslint-disable */
 // This file is auto gererated by build/build-entry.js
 import InfiniteButton from './infinite-button'
+import InfiniteCard from './infinite-card'
 import InfiniteCascaders from './infinite-cascaders'
 import InfiniteDialog from './infinite-dialog'
 import InfiniteDownload from './infinite-download'
@@ -30,6 +31,7 @@ import InfiniteScrollBar from './infinite-scrollbar'
 const version = '1.0.11-alpha'
 const components = [
   InfiniteButton,
+  InfiniteCard,
   InfiniteCascaders,
   InfiniteDialog,
   InfiniteDownload,
@@ -74,6 +76,7 @@ export {
   install,
   version,
   InfiniteButton,
+  InfiniteCard,
   InfiniteCascaders,
   InfiniteDialog,
   InfiniteDownload,
@@ -104,6 +107,7 @@ export default {
   install,
   version,
   InfiniteButton,
+  InfiniteCard,
   InfiniteCascaders,
   InfiniteDialog,
   InfiniteDownload,

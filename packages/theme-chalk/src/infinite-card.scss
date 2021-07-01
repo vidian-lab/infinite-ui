@@ -1,0 +1,19 @@
+@import './common/var.scss';
+
+.infinite-card {
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid rgba(90, 87, 87,0.5);
+  &.is-round {
+    border-radius: 8px;
+  }
+  &.shadow{
+    box-shadow: 1px 1px 4px 0 rgba(153,153,153, 0.5);
+  }
+  &.hover-shadow {
+    cursor: pointer;
+    &:hover {
+      box-shadow: 1px 1px 4px 0 rgba(153,153,153, 0.5);
+    }
+  }
+}

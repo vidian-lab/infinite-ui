@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+/tests/e2e/output
 /tests/unit/coverage
 /tests/unit/dist
 # local env files
@@ -21,3 +22,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+chromedriver.log
+safaridriver.log
+selenium-server.log

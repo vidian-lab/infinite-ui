@@ -1,0 +1,26 @@
+{
+    "src_folders": ["tests/e2e/"],
+    "output_folder": "tests/e2e/output/",
+    "selenium": {
+      "start_process": true,
+      "port": 4444
+    },
+    "test_settings": {
+      "chrome": {
+        "desiredCapabilities": {
+          "browserName": "chrome"
+        }
+      },
+      "safari": {
+        "desiredCapabilities": {
+          "browserName": "safari"
+        }
+      },
+      "ie": {
+        "desiredCapabilities": {
+          "browserName": "Internet explorer",
+          "javascriptEnabled": true
+        }
+      }
+    }
+  }

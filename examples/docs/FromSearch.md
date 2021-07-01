@@ -118,7 +118,7 @@
 
 支持用户对搜索内容的输入校验。
 
-:::demo 通过设置roles增加页面校验
+:::demo 通过设置rules增加页面校验
 
 ```html
 <template>

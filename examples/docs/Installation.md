@@ -15,7 +15,7 @@ npm i infinite-ui
 
 ```js
 import Vue from 'vue';
-import InfiniteUI from 'infinite-ui ';
+import InfiniteUI from 'infinite-ui';
 import 'infinite-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 
