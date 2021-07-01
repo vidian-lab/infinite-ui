@@ -1,30 +1,3 @@
-<<<<<<< HEAD
-@import "./common/var.scss";
-@import "./base.scss";
-@import "./infinite-button.scss";
-@import "./infinite-theme-picker.scss";
-@import "./infinite-table.scss";
-@import "./infinite-form.scss";
-@import "./infinite-dialog.scss";
-@import "./infinite-nav-menu.scss";
-@import "./infinite-pagination.scss";
-@import "./infinite-cascaders.scss";
-@import "./infinite-tree.scss";
-@import "./infinite-line-chart.scss";
-@import "./infinite-form.scss";
-@import "./infinite-steps.scss";
-@import "./infinite-step.scss";
-@import "./infinite-select-tags.scss";
-@import "./infinite-select.scss";
-@import "./infinite-option.scss";
-@import "./infinite-result.scss";
-@import "./infinite-form-search.scss";
-@import "./infinite-virtual-tree.scss";
-@import "./infinite-tooltips.scss";
-@import "./infinite-operation.scss";
-@import "./infinite-scrollbar.scss"
-
-=======
 @import './common/var.scss';
 @import './base.scss';
 @import './infinite-button.scss';
@@ -46,4 +19,7 @@
 @import './infinite-result.scss';
 @import './infinite-form-search.scss';
 @import './infinite-card.scss';
->>>>>>> dev
+@import "./infinite-virtual-tree.scss";
+@import "./infinite-tooltips.scss";
+@import "./infinite-operation.scss";
+@import "./infinite-scrollbar.scss"
