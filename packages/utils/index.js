@@ -19,7 +19,7 @@ export const dateFormat = function (dateTime, valueFormat) {
   // 输出月、日、时、分、秒、星期
   Object.keys(date).forEach(function (i) {
     // 只有写成`(${i})`形式，才能在正则表达式中捕获子匹配，进而才能用到RegExp.$1的值
-    if (new RegExp(`(${i})`).test(valueFormat)) {   
+    if (new RegExp(`(${i})`).test(valueFormat)) {
       // 判断，如果时间为一位数，则在前面加'0'
       if (RegExp.$1.length === 2) {
         if (date[i] < 10) {
@@ -121,6 +121,19 @@ export const uuidv4 = function () {
     return v.toString(16)
   })
 }
+
+export const getTextWidth = function (str) {
+  const span = document.createElement('span')
+  span.style.visibility = 'hidden'
+  span.style.display = 'inline-block'
+  span.id = 'text-width-temp'
+  span.innerHTML = str
+  document.querySelector('body').appendChild(span)
+  const text = document.querySelector('#text-width-temp')
+  const w = text.clientWidth
+  text.remove()
+  return w
+}
 export default {
   dateFormat,
   percentFormat,
@@ -130,5 +143,6 @@ export default {
   AxisOption,
   jsonFlat,
   uuidv4,
-  hyphenate
+  hyphenate,
+  getTextWidth
 }

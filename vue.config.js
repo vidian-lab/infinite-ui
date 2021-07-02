@@ -2,7 +2,7 @@ const path = require('path')
 const resolve = (dir) => {
   return path.join(__dirname, dir)
 }
-const portfinder = require('portfinder')
+// const portfinder = require('portfinder')
 const html = require('html-webpack-plugin')
 
 const { getExternalsEl } = require('./build/get-externals-elements')

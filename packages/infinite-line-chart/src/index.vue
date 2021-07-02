@@ -4,62 +4,64 @@
 
 <script>
 import mixinChart from 'infinite-ui/packages/mixins/chart'
-import { percentFormat, floatIntFormat, uuidv4 } from 'infinite-ui/packages/utils/index'
 
 export default {
   name: 'InfiniteLineChart',
   data () {
     return {
-      uuidv4
+     
     }
   },
   mixins: [mixinChart],
   props: {
+    // chartCfg
+    chartCfg: {
+      type: Object,
+      default: () => {}
+    },
+    axisConfig: {
+      type: Object,
+      default: () => ({
+        x: {
+          key: 'name',
+          cfg: {}
+        },
+        y: {
+          key: 'value', 
+          cfg: {}
+        }
+      })
+    },
     // 数据
     data: {
       type: Array,
       default: () => []
     },
-    // 坐标轴名称
-    axisName: {
+    // 颜色
+    color: {
       type: Object,
-      default: () => {
-        return {
-          name: 'name',
-          value: 'value',
-          type: 'type'
-        }
-      }
-    },
-    // 坐标轴颜色
-    axisColor: {
-      type: Object,
-      default: () => {
-        return {
-          lineColor: '#ccc',
-          labelColor: '#999'
-        }
-      }
-    },
-    // 单颜色
-    singleColor: {
-      type: String,
-      default: '#1890ff'
+      default: () => ({
+        key: 'type', 
+        value: ['red', 'blue', 'green', 'yellow']
+      })
     },
     // 是否显示图例
     showLegend: {
       type: Boolean,
       default: true
     },
+    legendConfig: {
+      type: Object,
+      default: () => ({})
+    },
     // 是否显示点
     showPoint: {
       type: Boolean,
       default: true
     },
-    // value 数据是否是百分数（整数和百分数）
-    isPercent: {
-      type: Boolean,
-      default: false
+    pointCfg: {
+      type: Object,
+      default: () => ({})
     },
     // 是否显示曲线
     isSmooth: {
@@ -71,113 +73,84 @@ export default {
       type: Boolean,
       default: true
     },
+    // 是否打开tooltip
     useTooltip: {
       type: Boolean,
       default: true
     },
-    // 内边距
-    padding: {
+    // tooltip配置
+    tooltipCfg: {
+      type: Object,
+      default: () => ({})
+    },
+    // 是否移除某个交互如点击筛选数据
+    removeInteractionOption: {
       type: Array,
-      default: function () {
-        return ['auto', 'auto']
-      }
+      default: () => ([])
     }
   },
   methods: {
     setChartConfig: function (data) {
       // 为 chart 装载数据
-      // this.chart.source(data)
       this.chart.data(data)
-      // this.chart.render()
-
       // 进行列定义
-      let _this = this
-      let scaleConfig = (function () {
-        let obj = {}
-        for (const key in _this.axisName) {
-          if (_this.axisName.hasOwnProperty(key)) {
-            obj[key] = {}
-            obj[key]['alias'] = _this.axisName[key]
-            if (key === 'value') {
-              // 数据格式, 将数据转为百分数或浮点数(保留一位小数), 整数不做处理
-              obj[key]['formatter'] = _this.isPercent ? percentFormat : floatIntFormat
-            }
+      const genConfig = () => {
+        for (const key in this.axisConfig) {
+          if (this.axisConfig.hasOwnProperty(key)) {
+            let k = this.axisConfig[key]['key'] || ''
+            this.chart.axis(k, this.axisConfig[key]['cfg'])
+            this.chart.scale({
+              [k]: {
+                ...this.axisConfig[key]['scaleCfg'] 
+              }
+            })
           }
         }
-        return obj
-      }())
-      this.chart.scale(scaleConfig)
-
+      }
+      // 配置Xaxis Yaxis scale
+      genConfig()
+    
+      // 配置tooltip
       // 是否使用tooltip
       if (this.useTooltip) {
         // 配置图表tooltip
-        this.chart.tooltip(true, {
-          crosshairs: {
-            type: 'line'
-          }
-        })
+        this.chart.tooltip(this.tooltipCfg)
       } else {
         this.chart.tooltip(false)
       }
-
       // 配置图表图例
       if (this.showLegend) {
-        this.chart.legend('type', {
-          position: 'bottom-center'
-        })
+        this.chart.legend('type', { ...{
+          position: 'bottom'
+        },
+        ...this.legendConfig })
       } else {
-        this.chart.legend('type', false)
+        this.chart.legend(false) // 关闭图例
       }
-
-      // 坐标轴配置
-      this.chart.axis('name', {
-        tickLine: false
-      })
-      this.chart.axis('value', {
-        grid: {
-          lineStyle: {
-            lineDash: null,
-            stroke: '#d9d9d9',
-            lineWidth: 1
-          }
-        },
-        label: {
-          autoRotate: false,
-          rotate: 0,
-          formatter: (text, item, index) => {
-            return text + ''
-          }
-        },
-        tickLine: false
-      })
-
+      let valueStr = `${this.axisConfig['x']['key']}*${this.axisConfig['y']['key']}` || 'name*value'
       // 配置折线和散点的颜色、形状等
-      let line = this.chart.line().position('name*value')
+      let line = this.chart.line().position(valueStr)
       let point
-
       if (this.showPoint) {
-        point = this.chart.point().position('name*value').size(4).shape('circle').style({
-          stroke: '#fff',
-          lineWidth: 1
-        })
+        point = this.chart.point().position(valueStr).size(4).shape('circle').style(this.pointCfg)
       }
 
       // 配置多条折线时的颜色
-      if (this.data.length > 0 && this.data[0].hasOwnProperty('type')) {
-        line.color('type')
+      if (this.data.length > 0) {
+        line.color(this.color['key'], this.color['value'])
         if (this.showPoint) {
-          point.color('type')
-        }
-      } else {
-        line.color(this.singleColor)
-        if (this.showPoint) {
-          point.color(this.singleColor)
+          point.color(this.color['key'], this.color['value'])
         }
       }
 
       // 折线是否显示为曲线
       if (this.isSmooth) {
         line.shape('smooth')
+      }
+
+      // 移除传入的相关交互
+      if (Array.isArray(this.removeInteractionOption) && this.removeInteractionOption.length) {
+        this.chart.removeInteraction(...this.removeInteractionOption)
       }
     }
   }

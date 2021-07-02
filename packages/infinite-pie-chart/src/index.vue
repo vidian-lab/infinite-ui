@@ -14,6 +14,11 @@ export default {
   },
   mixins: [mixinChart],
   props: {
+    // chartCfg
+    chartCfg: {
+      type: Object,
+      default: () => {}
+    },
     data: {
       type: Array,
       default: () => []
