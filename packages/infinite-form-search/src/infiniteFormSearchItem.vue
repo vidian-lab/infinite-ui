@@ -42,6 +42,19 @@ export default {
       if (typeof this.inputBox.searchSelectHandler === 'function') {
         this.inputBox.searchSelectHandler.call(this, item)
       }
+    },
+    searchHighlight (str, subStr) {
+      if (!subStr) {
+        return [str]
+      }
+      const brr = []
+      str.split(subStr).forEach((item, index) => {
+        if (index) {
+          brr.push(subStr)
+        }
+        brr.push(item || '')
+      })
+      return brr
     }
   },
   render (h) {
@@ -54,7 +67,7 @@ export default {
       searchSelectHandler
     } = this
     const placeholder = inputBox.placeholder || ''
-
+    
     switch (inputBox.type) {
       case 'input':
         return (
@@ -82,7 +95,19 @@ export default {
             fetch-suggestions={fetchSuggestions}
             trigger-on-focus={false}
             vOn:select={searchSelectHandler}
-          ></el-autocomplete>
+            scopedSlots={
+              inputBox.openHignlight ? {
+                default: (props) => {
+                  return (<div>{
+                    this.searchHighlight(props.item.value, searchModels[inputBox.searchKey]).map((i, ind) => {
+                      return (<span style={ind % 2 ? { color: inputBox.hignlightColor || '#ff8241' } : {}}>{i}</span>)
+                    })
+                  }</div>)
+                }
+              } : {}
+            }
+          >
+          </el-autocomplete>
         )
       default:
         return null

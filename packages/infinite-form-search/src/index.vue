@@ -6,7 +6,7 @@
         v-for="item in searchItem"
         :key="item.inputBox.searchKey"
         :prop="item.inputBox.searchKey"
-      >
+        >
         
         <form-search-item
           :inputBox="item.inputBox"
