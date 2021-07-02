@@ -29,6 +29,10 @@ export default {
         {
           index: '2',
           label: '通用模块'
+        },
+        {
+          index: '3',
+          label: '图表模块'
         }
       ]
     }
@@ -36,6 +40,7 @@ export default {
   computed: {
     menuList () {
       const componentlist = []
+      const chartlist = []
       this.$router.options.routes.forEach((route) => {
         if (route.name === 'Guide') {
           route.children.forEach(r => {
@@ -45,10 +50,18 @@ export default {
                 label: r.name
               })
             }
+            if (r.meta && r.meta.type === 'chart') {
+              chartlist.push({
+                index: r.path,
+                label: r.name
+              })
+            }
           })
         }
       })
       this.$set(this.mainMenuData[1], 'children', componentlist)
+      this.$set(this.mainMenuData[2], 'children', chartlist)
+
       return this.mainMenuData
     }
   },

@@ -11,9 +11,10 @@ export function getFileList () {
       name: name,
       component: files(key).default,
       meta: {
-        type: 'component'
+        type: (name.indexOf('Chart') !== -1) ? 'chart' : 'component'
       }
     }
+    
     result.push(element)
   })
   return result
