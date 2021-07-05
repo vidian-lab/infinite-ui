@@ -96,11 +96,11 @@ export default {
             trigger-on-focus={false}
             vOn:select={searchSelectHandler}
             scopedSlots={
-              inputBox.openHignlight ? {
+              inputBox.openHighlight ? {
                 default: (props) => {
                   return (<div>{
                     this.searchHighlight(props.item.value, searchModels[inputBox.searchKey]).map((i, ind) => {
-                      return (<span style={ind % 2 ? { color: inputBox.hignlightColor || '#ff8241' } : {}}>{i}</span>)
+                      return (<span style={ind % 2 ? { color: inputBox.highlightColor || '#ff8241' } : {}}>{i}</span>)
                     })
                   }</div>)
                 }

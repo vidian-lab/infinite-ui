@@ -77,7 +77,7 @@
                         clearable:true,
                         fetchSuggestions:this.selectFetchSuggestions,
                         searchSelectHandler:this.searchSelectHandler,
-                        openHignlight: true
+                        openHighlight: true
                     }
                 }
             ],
@@ -197,5 +197,5 @@
 | inputHandler        | `type`为`input`时，输入框的`input`回调事件       | Function(val)             | —                 | —      |
 | fetchSuggestions    | `type`为`selectFetch`时，输入框的`input`回调事件 | Function(queryString, cb) | —                 | —      |
 | searchSelectHandler | `type`为`selectFetch`时，选中数据项后的回调事件  | Function(item)            | —                 | —      |
-| openHignlight   | 是否打开搜索高亮                                    | Boolean                   | —                 | false  |
-| hignlightColor  | 搜索高亮的颜色值                                    | String                    | —                 | #ff8241|
+| openHighlight   | 是否打开搜索高亮                                    | Boolean                   | —                 | false  |
+| highlightColor  | 搜索高亮的颜色值                                    | String                    | —                 | #ff8241|
